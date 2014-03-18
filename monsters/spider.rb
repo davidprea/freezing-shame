@@ -4,7 +4,6 @@ class Spider < Monster
   
   def initialize
     super
-    puts "Spider initializing"
   end
       
   def self.weapons

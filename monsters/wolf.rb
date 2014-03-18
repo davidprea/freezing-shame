@@ -4,7 +4,6 @@ class Wolf < Monster
   
   def initialize
     super
-    puts "Wolf initializing"
   end
       
   def self.weapons

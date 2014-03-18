@@ -4,7 +4,6 @@ class Orc < Monster
   
   def initialize
     super
-    puts "Orc initializing"
   end
   
   

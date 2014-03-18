@@ -4,7 +4,6 @@ class Troll < Monster
   
   def initialize
     super
-    puts "Troll initializing"
   end
   
   

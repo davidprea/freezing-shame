@@ -148,6 +148,8 @@ post('/masterform') do
     end
   end
   
+  puts "IP address: #{request.ip}"
+  
   token = FightRecord.generate_token
   hero = Hero.fromParams params
   h = hero.to_hash
