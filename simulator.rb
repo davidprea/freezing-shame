@@ -152,8 +152,10 @@ post('/masterform') do
 #    puts "Param: " + k.to_s + ": " + params[k].to_s
 #  end
   
-  
-  puts "IP address: #{request.ip}"
+  filename = "addresses.txt"
+  file = (File.exist?(filename) ? File.open(filename, 'a+') : File.new(filename, 'a+'))
+  file.puts "#{Time.now.to_s} : #{request.ip}"
+  file.close
   
   token = FightRecord.generate_token
   hero = Hero.fromParams params
