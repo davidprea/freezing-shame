@@ -148,9 +148,9 @@ post('/masterform') do
     end
   end
   
-  params.keys.each do |k|
-    puts "Param: " + k.to_s + ": " + params[k].to_s
-  end
+ # params.keys.each do |k|
+#    puts "Param: " + k.to_s + ": " + params[k].to_s
+#  end
   
   
   puts "IP address: #{request.ip}"
