@@ -35,7 +35,7 @@ class EreborDwarf < Hero
   end 
   
   def totalFatigue
-    [super - @f_heart, 0].max
+    [super - (@heart + @f_heart), 0].max
   end
   
    
