@@ -12,7 +12,7 @@ class Monster < Opponent
   @@monsters = nil
   
   attr_accessor :attribute_level, :parry, :hate, :abilities
-  attr_accessor :max_hate, :max_endurance
+  attr_accessor :current_hate
   attr_accessor :sauron_rule, :unique
     
   def initialize
@@ -22,7 +22,7 @@ class Monster < Opponent
     @abilities = {}
     @unique = false
     @sauron_rule = false
-    @hate = 1
+    @hate = 0
     @current_weapon_index = 0
     @special_abilities = 0 #bit mask
   end
@@ -71,7 +71,7 @@ class Monster < Opponent
   
   def weaponDamage
     damage = super
-    if( (@abilities.include? :horrible_strength) && @hate > 0 && (rand() < 0.5) )
+    if( (@abilities.include? :horrible_strength) && @current_hate > 0 && (rand() < 0.5) )
       damage += @attribute_level
         FightRecord.addEvent( @token, self.name, :hate, nil, :horrible_strength.to_s )
       self.spendHate
@@ -80,7 +80,7 @@ class Monster < Opponent
   end
   
   def takeDamage( opponent, amount )
-    if( ( @abilities.include? :hideous_toughness ) && amount >= @attribute_level && @hate > 0 )
+    if( ( @abilities.include? :hideous_toughness ) && amount >= @attribute_level && @current_hate > 0 )
       amount -= @attribute_level
       FightRecord.addEvent( @token, self.name, :hate, nil, :hideous_toughness.to_s )
       self.spendHate
@@ -89,8 +89,8 @@ class Monster < Opponent
   end
   
   def spendHate
-    @hate = @hate - 1
-    if( @hate < 1 )
+    @current_hate -= 1
+    if( @current_hate < 1 )
       FightRecord.addEvent( @token, self.name, :out_of_hate, nil, nil )
     end
   end
@@ -105,8 +105,8 @@ class Monster < Opponent
   def to_hash
     {
       "Attribute Level" => self.attribute_level,
-      "Endurance" => self.maxEndurance,
-      "Hate" => self.max_hate,
+      "Endurance" => self.endurance,
+      "Hate" => self.hate,
 #      "Unique" => self.unique.to_s,
       "Weapon Skill" => self.weapon_skill,
       "Weapon" => self.weapon.to_s,
@@ -133,11 +133,13 @@ class Monster < Opponent
     @name = type[:name]
     @abilities = Hash[type[:abilities].collect{ |k| [k,Monster.abilities[k]]}] # yikes. take array of symbols and build hash
     @attribute_level = type[:attribute_level]
-    @max_hate = type[:hate]
+    @hate = type[:hate]
+    @current_hate = @hate
     if type.include? :unique
       @unique = type[:unique]
     end
-    @max_endurance = type[:endurance]
+    @endurance = type[:endurance]
+    @current_endurance = @endurance
     @armor = type[:armor]
     @size = type[:size]
     @parry = type[:parry]
@@ -260,13 +262,13 @@ class Monster < Opponent
   
   
   def maxEndurance
-    @max_endurance
+    @endurance
   end
   
-  def hit_by? opponent, dice
-    if( @abilities.keys.include? :snake_like_speed )
+  def hit_by? opponent
+    if( !opponent.dice.gandalf? && @abilities.keys.include?( :snake_like_speed ) && @current_hate > 0 )
       tn = opponent.tnFor self
-      d = dice.total
+      d = opponent.dice.total
       if (d > tn) && ((d - tn) < (self.parry opponent))
         FightRecord.addEvent( @token, @name, :hate, nil, :snake_like_speed )
         self.spendHate 
@@ -292,7 +294,7 @@ class Monster < Opponent
   
   def reset
     super
-    @hate = @max_hate
+    @current_hate = @hate
   end
   
   def tnFor opponent
@@ -312,7 +314,7 @@ class Monster < Opponent
   end
   
   def alive?
-    if( @abilities.include? :craven && @hate < 1 )
+    if( @abilities.include? :craven && @current_hate < 1 )
       FightRecord.addEvent( @token, :hate, :flees, nil, :craven)
       return false
     else
@@ -322,7 +324,7 @@ class Monster < Opponent
   
   
   def weary?
-    super || (@hate < 1)
+    super || (@current_hate < 1)
   end
   
   def damageBonus

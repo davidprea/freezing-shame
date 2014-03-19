@@ -9,6 +9,14 @@
           box-sizing: border-box;
 }
 
+
+
+fieldset{
+	border:1px solid #999;
+	padding:5px;
+	margin:5px;
+}
+
 select{
 	float:center;
 }
@@ -27,10 +35,7 @@ body{
 	width:auto;
 }
 
-#submit_button {
-	font-family: sans-serif;
-	font-size: 16px;
-}
+
 
 #header{
 	background-color:#ade;
@@ -91,27 +96,13 @@ td.stats {
 }
 
 
-
-
-
-#feat{
-	
+#submit_button {
+	font-family:sans-serif;
+	font-style:bold;
+	font-size:20px;
 }
 
 
-
-
-td{
-	padding:1px;
-}
-
-
-
-fieldset{
-	border:1px solid #999;
-	padding:5px;
-	margin:5px;
-}
 
 
 

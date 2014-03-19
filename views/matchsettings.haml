@@ -9,16 +9,24 @@
 			%label{ :title => "Output aggregate stats." }
 				Fight 100 times.
 	%p
-		%input{ :type => "radio", :name => "iterations", :value => 3, :checked => false }
-			%label{ :title => "Had to disable 10k iterations; it was making heroku barf." }
-				Best out of a thousand?
+		%input{ :type => "radio", :name => "iterations", :value => 4, :checked => false }
+			%label{ :title => "10,000 divided by # of opponents." }
+				Lots.
+%fieldset
+	%legend Hope
+	%label Max spent per fight:
+	%select{ :name => "hope"}
+		-3.times do |i|
+			%option{ :value => i }
+				= (i).to_s
 %fieldset
 	%legend Stance
 	%select{ :id => "stance", :name => "stance"}
 		-stances = ["Defensive","Open","Forward"]
 		-stances.size.times do |i|
-			%option{:value => "#{12-i*3}"}
-				=stances[i];
+			%option{:value => 12-i*3 }
+				=stances[i]
+				
 %input{ :type => "checkbox", :name => "sauron_rule", :checked => false}
 	%label{ :title => "When Hero rolls a Sauron, opponent will try a called shot."}
 		"Called Shot on Sauron" Rule

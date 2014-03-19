@@ -13,6 +13,8 @@
 			Resist Pierce
 		%th.stats{ :width=>50 }
 			Wounds/Fight
+		%th.stats{ :width=> 50 }
+			Hope Spent/Fight
 	-stats.keys.sort.each do |key|
 	-hits = stats[key][:hits]
 	-attacks = stats[key][:attacks]
@@ -21,6 +23,7 @@
 	-prots = stats[key][:armor_checks]
 	-wounds = stats[key][:wounds]
 	-deaths = stats[key][:deaths]
+	-hope = stats[key][:hope]
 		%tr.stats
 			%td.stats
 				=key
@@ -36,6 +39,8 @@
 				=( prots > 0 ? (((prots - wounds) * 100 / prots).to_s + "%") : "N/A" )
 			%td.stats{:align=>"center"}
 				=( wounds * 1.0 / iterations ).round(2).to_s
+			%td.stats{:align=>"center"}
+				=( hope * 1.0 / iterations).round(2).to_s
 			
 		
 	

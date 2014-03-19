@@ -7,8 +7,9 @@ class Hero < Opponent
   attr_accessor :f_body, :f_wits, :f_heart # favoured value bonus (e.g., delta, not total)
   attr_accessor :fatigue, :stance
   attr_accessor :wisdom, :valor
+  attr_accessor :hope, :current_hope
   attr_accessor :feats #generic for Virtues AND Rewards
-  attr_accessor :favoured_weapon, :r_favoured_weapon
+  attr_accessor :weapon_favoured, :r_weapon_favoured # booleans
   
   @@cultures = Set.new
   @@gear = Hash.new
@@ -18,6 +19,7 @@ class Hero < Opponent
     @body = 0
     @wits = 0
     @heart = 0
+    @hope = 0
     @f_heart = 0
     @f_wits = 0
     @f_body = 0
@@ -44,11 +46,13 @@ class Hero < Opponent
     @body = background[:body]
     @heart = background[:heart]
     @wits = background[:wits]
+    @hope = params[:hope].to_i
     self.weapon = params[:weapon].to_sym
     self.armor = params[:armor].to_sym
     self.shield = params[:shield].to_sym
     self.helm = params[:helm].to_sym
-    @weapon_skill = params[:Weapon_skill].to_i
+    @weapon_skill = params[:weapon_skill].to_i
+    @weapon_favoured = (params[:weapon_favoured] == "on")
     @stance = params[:stance].to_i
     self.class.virtues.keys.each do |v|
 #      puts "Virtue Key: " + v.to_s
@@ -100,7 +104,7 @@ class Hero < Opponent
       "Parry" => self.parry, 
       "Protection" => (self.protection[0].to_s + "d + " + self.protection[1].to_s), 
       "Weapon" => self.weapon.to_s, 
-      "Endurance" => self.maxEndurance, 
+      "Endurance" => self.endurance, 
       "Fatigue" => self.fatigue,
       "Virtues" => "(" + @feats.to_a.join(", ") + ")" 
       }
@@ -188,9 +192,17 @@ class Hero < Opponent
   def addVirtue virtue
     @feats.add virtue
   end
-  # 
+  
+  def maxEndurance
+    self.class.enduranceBase + @body
+  end
+  
   def self.enduranceBase
     0 # implemented by subclasses
+  end
+  
+  def enduranceBase
+    return self.class.enduranceBase
   end
   
   def self.hopeBase
@@ -206,7 +218,7 @@ class Hero < Opponent
   end
   
   def maxEndurance
-    super + ((self.hasVirtue? :resilience) ? 2 : 0)
+    self.enduranceBase + @heart + ((self.hasVirtue? :resilience) ? 2 : 0)
   end
   
   def valourCheck? tn=14
@@ -217,13 +229,6 @@ class Hero < Opponent
   def wisdomCheck tn=14
     @dice.roll( @wisdom, self.weary?, 0)
     @dice.test tn
-  end
-  
-  
-  # testing out setter override
-  def body=(new_body )
-    @body = new_body
-    @endurance = self.class.enduranceBase + @body
   end
 
   def setBody(new_body, favoured_bonus )
@@ -248,7 +253,7 @@ class Hero < Opponent
     result[:expertise] = {:name => "Expertise", :implemented => false}
     result[:fell_handed] = {:name => "Fell-handed", :tooltip => "Increase close combat damage by 1", :implemented => true}
     result[:gifted] = {:name => "Gifted", :implemented => false}
-    result[:resilience] = {:name => "Resilience", :tooltip => "Increase endurance by 3", :implemented => true}
+    result[:resilience] = {:name => "Resilience", :tooltip => "Increase endurance by 2", :implemented => true}
     result
   end
   
@@ -311,6 +316,7 @@ class Hero < Opponent
   
   def reset
     super
+    @current_hope = @hope
   end
   
   def feat symbol
@@ -349,6 +355,31 @@ class Hero < Opponent
     [(@armor ? @armor.value : 0), (@helm ? @helm.value : 0)]
   end
   
+  def checkForWound tn
+    test = @dice.test tn
+    if !test && @current_hope > 0 && @wounds > 0
+      if (tn - @dice.total) <= @body
+        @current_hope -= 1
+        FightRecord.addEvent( @token, self.name, :hope, nil, :protection )
+        return 
+      end
+    end
+    #otherwise just default to regular behavior
+    super
+  end 
+  
+  
+  def hit? opponent
+    if !super && (@current_hope > 0)
+      attribute_bonus = @body + ( @favoured_weapon ? @f_body : 0 )
+      if !@dice.sauron? && (self.tnFor(opponent) - @dice.total <= attribute_bonus && @dice.tengwars > 1 )
+        @current_hope -= 1
+        FightRecord.addEvent( @token, self.name, :hope, nil, :attack)
+        @dice.bonus += attribute_bonus # modify the dice and return super
+      end
+    end     
+    super   
+  end
   
   
   def tn opponent  # this is TN to get hit
@@ -365,7 +396,7 @@ class Hero < Opponent
   
   
   def weary?
-    super || (self.totalFatigue > @endurance)
+    super || (self.totalFatigue > @current_endurance)
   end
   
   def attackRoll

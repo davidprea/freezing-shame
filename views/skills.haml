@@ -13,8 +13,8 @@
 						=s
 					- 6.times do |i|
 						%td
-							%input{:type=>"radio", :value=> i+1, :name=> ("#{s}" + "_skill")}
+							%input{:type=>"radio", :value=> i+1, :name=> ("#{s.downcase}_skill")}
 					%td
-						%input{:type=>"checkbox", :disabled => true, :name => ("#{s}" + "_favoured" ), :value=>false}
-					%td{ :title => "Not implemented."}
+						%input{:type=>"checkbox", :disabled => s == "Battle", :name => ("#{s.downcase}_favoured" ), :value=>false}
+					%td
 						Favoured

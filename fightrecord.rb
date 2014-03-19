@@ -74,7 +74,7 @@ class FightRecord
       record.events.each do |event|
         actor = event[:player]
         if !results[actor] 
-          h = {:hits=>0,:weary=>0,:attacks=>0,:wounds=>0,:armor_checks=>0,:pierces=>0,:deaths=>0}
+          h = {:hits=>0,:weary=>0,:attacks=>0,:wounds=>0,:armor_checks=>0,:pierces=>0,:deaths=>0, :hope=>0}
           results[actor] = h
         end
         entry = results[actor]
@@ -90,6 +90,8 @@ class FightRecord
           end
         when :pierce
           entry[:pierces] += 1
+        when :hope
+          entry[:hope] += 1
         when :armor_check
           entry[:armor_checks] += 1
         when :wound
@@ -127,6 +129,13 @@ class FightRecord
           result += event[:player] + " is <b><i>craven</i></b> and tries to flee!"
         else
           result += event[:player] + " uses its <b><i>" + event[:value].to_s + "</i></b>"
+        end
+      when :hope
+        case event[:value]
+        when :protection
+          result += event[:player] + " spends <b>Hope</b> to avoid a wound."
+        when :attack
+          result += event[:player] + " spends <b>Hope</b> to turn a miss into a hit."
         end
       when :disarmed
         result += event[:player] + " is <b>disarmed</b>!"

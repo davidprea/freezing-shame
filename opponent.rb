@@ -9,7 +9,7 @@ class Opponent
   attr_accessor :name, :endurance, :weapon_skill, :wounds
   attr_accessor :size # 2 == Hobbit, 3 == Man
   attr_accessor :armor, :shield, :helm
-  attr_accessor :max_endurance
+  attr_accessor :current_endurance
   attr_accessor :weapon, :weapon_skill
   attr_accessor :rweapon, :r_weapon_skill # ranged.  NYI
   #attr_accessor :weapon_name, :weapon_damage, :weapon_edge, :weapon_injury
@@ -155,10 +155,6 @@ class Opponent
     end
     @helm
   end
-    
-  def maxEndurance
-    self.class.enduranceBase + @body
-  end
   
   def parry opponent=nil
     0 # implemented by subclasses
@@ -174,12 +170,12 @@ class Opponent
   def reset
     @wounds = 0
     @is_shield_broken = false
-    @endurance = self.maxEndurance
+    @current_endurance = self.maxEndurance
     @conditions = Set.new
   end
   
   def alive?
-    @endurance > 0
+    @current_endurance > 0
   end
 
   def weary?
@@ -206,11 +202,16 @@ class Opponent
     self.dice.bonus = prot[1]
     FightRecord.addEvent( @token, self.name, :pierce, nil, nil )
     FightRecord.addEvent( @token, self.name, :armor_check, @dice, tn )
+    self.checkForWound tn
+  end
+  
+  def checkForWound tn
     test = @dice.test tn
     if !test
       self.wound
     end
   end
+    
   
   def protection opponent=nil
     [(@armor ? @armor.value : 0), 0]
@@ -266,7 +267,7 @@ class Opponent
   end
   
   def takeDamage opponent, amount
-    @endurance -= amount
+    @current_endurance -= amount
     FightRecord.addEvent( @token, self.name, :damage, nil, amount )
   end
     
@@ -279,12 +280,12 @@ class Opponent
     0 # implemented by subclasses
   end
   
-  
   def hit? opponent
-    (@dice.test self.tnFor opponent) && (opponent.hit_by? self, @dice )
+    @dice.test self.tnFor(opponent)
   end
   
-  def hit_by? opponent, dice
+  
+  def hit_by? opponent
     true # potentially overriden by subclasses
   end
     
@@ -336,7 +337,7 @@ class Opponent
     
     FightRecord.addEvent( @token, self.name, :attack, @dice.clone, tn )
     
-    if( self.hit? opponent ) # give opponent one last chance to avoid...
+    if( self.hit?(opponent) && opponent.hit_by?(self)) # give opponent one last chance to avoid...
       self.hit opponent
     end
     

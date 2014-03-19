@@ -148,6 +148,11 @@ post('/masterform') do
     end
   end
   
+  params.keys.each do |k|
+    puts "Param: " + k.to_s + ": " + params[k].to_s
+  end
+  
+  
   puts "IP address: #{request.ip}"
   
   token = FightRecord.generate_token
@@ -164,6 +169,9 @@ post('/masterform') do
     monster.token = token
   end
   iterations = 10**(params["iterations"].to_i)
+  if iterations == 10000
+    iterations /= monstercount
+  end
   deathmatch( hero, monsters, iterations  )  
   
   if iterations == 1
