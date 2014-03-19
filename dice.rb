@@ -124,6 +124,10 @@ class Dice
   end
   
   def tengwars
+    [self.allTengwars, 2].min
+  end
+  
+  def allTengwars
     @rolls.count{ |d| d == 6 }
   end
   

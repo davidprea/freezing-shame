@@ -1,5 +1,6 @@
 require './opponent'
 require 'set'
+require './houserule'
 
 class Hero < Opponent
     
@@ -23,7 +24,6 @@ class Hero < Opponent
     @f_heart = 0
     @f_wits = 0
     @f_body = 0
-    @fatigue = 0
     @stance = 9
     @wisdom = 0
     @valor = 0
@@ -210,11 +210,20 @@ class Hero < Opponent
   end
   
   def totalFatigue
-    @fatigue + self.encumbrance
+    self.encumbrance - ((HouseRule.include? :belegs_rule) ? @body : 0)
   end
   
+  def takeDamage opponent, amount
+    if HouseRule.include? :angelalexs_rule
+      amount = [amount - self.protection[0], 0].max
+      super opponent, amount
+    else
+      super
+    end
+  end
+
   def encumbrance
-    self.armor.encumbrance + self.helm.encumbrance + self.shield.encumbrance + self.weapon.encumbrance
+      self.armor.encumbrance + self.helm.encumbrance + self.shield.encumbrance + self.weapon.encumbrance
   end
   
   def maxEndurance
@@ -222,12 +231,12 @@ class Hero < Opponent
   end
   
   def valourCheck? tn=14
-    @dice.roll( @valour, self.weary?, 0)
+    self.roll( @valour )
     @dice.test tn
   end
   
   def wisdomCheck tn=14
-    @dice.roll( @wisdom, self.weary?, 0)
+    self.roll( @wisdom )
     @dice.test tn
   end
 
@@ -313,6 +322,13 @@ class Hero < Opponent
     damage
   end
   
+  # only call this when computing damage....?
+  def extraSuccesses
+    if HouseRule.include? :woodclaws_rule
+      return [@dice.allTengwars, (15 - @stance) / 3].min
+    end
+    super
+  end
   
   def reset
     super

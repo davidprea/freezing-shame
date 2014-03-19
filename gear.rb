@@ -32,6 +32,15 @@ class Gear < Equipment
     result
   end
   
+  def encumbrance
+    val = super
+    if ( self.qualities.to_a & [:cunning_make_armor, :cunning_make_shield, :cunning_make_helm ] ).size > 0
+      return [val - 2, 0].max
+    end
+    return val
+  end
+  
+  
 end
 
 class Protection < Gear
@@ -39,6 +48,8 @@ class Protection < Gear
   def value
     @value
   end
+  
+  
   
 end
 
@@ -51,13 +62,6 @@ class Armor < Protection
     return super + ((self.hasQuality? :close_fitting_armor) ? 1 : 0 )
   end
   
-  def encumbrance
-    val = super
-    if( self.hasQuality? :cunning_make_armor )
-      return [val - 2, 0].max
-    end
-    return val
-  end
 end 
 
 class Helm < Protection
@@ -69,16 +73,9 @@ class Helm < Protection
     return super + ((self.hasQuality? :close_fitting_helm) ? 1 : 0 )
   end
   
-  def encumbrance
-    val = super
-    if( self.hasQuality? :cunning_make_helm )
-      return [val - 2, 0].max
-    end
-    return val
-  end
-    
+
   
-  
+
 end
 
 class Shield < Gear
@@ -91,15 +88,7 @@ class Shield < Gear
     end
     @is_broken
   end
-  
-  def encumbrance
-    val = super
-    if( self.hasQuality? :cunning_make_shield )
-      return [val - 2, 0].max
-    end
-    return val
-  end
-  
+    
   
   def qualityList
     [:cunning_make_shield, :reinforced] # implemented by subclasses; list of all possible qualities

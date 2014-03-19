@@ -5,6 +5,7 @@ require 'haml'
 
 Dir["./monsters/*"].each {|file| require file }
 Dir["./heroes/*"].each {|file| require file }
+require './houserule'
 
 
 
@@ -148,14 +149,11 @@ post('/masterform') do
     end
   end
   
- # params.keys.each do |k|
+#  params.keys.each do |k|
 #    puts "Param: " + k.to_s + ": " + params[k].to_s
 #  end
-  
-  filename = "addresses.txt"
-  file = (File.exist?(filename) ? File.open(filename, 'a+') : File.new(filename, 'a+'))
-  file.puts "#{Time.now.to_s} : #{request.ip}"
-  file.close
+ 
+  HouseRule.parseParams params
   
   token = FightRecord.generate_token
   hero = Hero.fromParams params

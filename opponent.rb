@@ -254,11 +254,21 @@ class Opponent
     injury
   end
   
-  def getHitBy opponent
-    damage = opponent.weaponDamage
-    opponent.dice.tengwars.times do
-      damage += opponent.damageBonus
+  def extraSuccesses
+    @dice.tengwars
+  end
+  
+  def computeDamage
+    damage = self.weaponDamage
+    self.extraSuccesses.times do
+      damage += self.damageBonus
     end
+    damage
+  end
+    
+  
+  def getHitBy opponent
+    damage = opponent.computeDamage
     self.takeDamage opponent, damage
   end
   
