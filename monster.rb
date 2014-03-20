@@ -30,7 +30,7 @@ class Monster < Opponent
   def self.abilities
     {
       :horrible_strength => { :name => "Horrible Strength", :tooltip => "Spend hate to increase damage by attribute-level. (50% chance per hit.)" },
-      :hideous_toughness => { :name => "Hideous Toughness", :tooltip => "Spend hate to reduce damage by attribute-level"},
+      :hideous_toughness => { :name => "Hideous Toughness", :tooltip => "Spend hate to reduce damage by attribute-level when damage >= attribute_level."},
       :great_size => { :name => "Great Size", :tooltip => "Requires two wounds, or one wound and zero endurance, to kill."},
       :hate_sunlight => { :name => "Hate Sunlight", :tooltip => "Unimplemented."},
       :savage_assault => { :name => "Savage Assault", :tooltip => "On great or extraordinary success, roll second attack with alternate weapon."},

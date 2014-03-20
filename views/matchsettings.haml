@@ -27,15 +27,18 @@
 			%option{:value => 12-i*3 }
 				=stances[i]
 				
-%input{ :type => "checkbox", :name => "sauron_rule", :checked => true}
-	%label{ :title => "When Hero rolls a Sauron, opponent will try a called shot."}
-		"Called Shot on Sauron" Rule
+%fieldset
+	%legend Official Rules
+				
+	%input{ :type => "checkbox", :name => "sauron_rule", :checked => true}
+		%label{ :title => "When Hero rolls a Sauron, opponent will try a called shot."}
+			"Called Shot on Sauron" Rule
 		
-%p
+	%p
 
-%input{ :type => "checkbox", :name => "knockback_rule", :checked => false}
-	%label{ :title => "When hit by an Extraordinary Success, hero will take half damage but miss next turn."}
-		Use Knockback 
+	%input{ :type => "checkbox", :name => "knockback_rule", :checked => false}
+		%label{ :title => "When hit by an Extraordinary Success, hero will take half damage but miss next turn."}
+			Use Knockback 
 
 		
 = partial :houserules, :layout => false
