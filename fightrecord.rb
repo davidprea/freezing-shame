@@ -73,31 +73,28 @@ class FightRecord
     array.each do |record|
       record.events.each do |event|
         actor = event[:player]
-        if !results[actor] 
-          h = {:hits=>0,:weary=>0,:attacks=>0,:wounds=>0,:armor_checks=>0,:pierces=>0,:deaths=>0, :hope=>0}
+        h = results[actor]
+        if !h 
+          h = {:hits=>0, :weary=>0, :hope=> {}}
           results[actor] = h
         end
-        entry = results[actor]
-      
-        case event[:type]
-        when :attack
-          entry[:attacks] += 1
-          if event[:dice].test event[:value]
-            entry[:hits] += 1
-          end
-          if event[:dice].weary
-            entry[:weary] += 1
-          end
-        when :pierce
-          entry[:pierces] += 1
-        when :hope
-          entry[:hope] += 1
-        when :armor_check
-          entry[:armor_checks] += 1
-        when :wound
-          entry[:wounds] += 1
-        when :dies
-          entry[:deaths] += 1
+        type = event[:type]
+        
+        if type == :attack
+          event[:dice].test( event[:value] )
+          h[:hits] +=  (event[:dice].test event[:value] ) ? 1 : 0
+          h[:weary] += event[:dice].weary ? 1 : 0  
+        end
+        
+        if type == :hope
+          type = event[:value]
+          h = h[:hope]
+        end
+        
+        if !h[type]
+          h[type] = 1
+        else
+          h[type] += 1
         end
       end
     end

@@ -266,6 +266,31 @@ class Hero < Opponent
     result
   end
   
+  def usesOfHope
+    {
+      :any_wound => {
+        :name => "Avoid Wound",
+        :tooltip => "Spend Hope on any failed Protection Wound"
+      },
+      :second_wound => {
+        :name => "Avoid 2nd Wound",
+        :tooltip => "Spend Hope to avoid a second Wound" 
+      },
+      :great_success => {
+        :name => "Great Attack",
+        :tooltip => "Turn a miss into a hit on a Great Success"
+      },
+      :extra_success => {
+        :name => "Extraordinary Attack",
+        :tooltip => "Turn a miss into a hit on an Extraordinary Success"
+      },
+      :pierce => {
+        :name => "Piercing Attack",
+        :tooltip => "Turn a miss into a hit on a Pierce"
+      }
+    }
+  end
+  
   def self.rewards #modifiers applied to self
     # problem....some qualities apply only to some armor items...
     # maybe compare qualities handled by item to qualities avaialble to character?
@@ -376,7 +401,7 @@ class Hero < Opponent
     if !test && @current_hope > 0 && @wounds > 0
       if (tn - @dice.total) <= @body
         @current_hope -= 1
-        FightRecord.addEvent( @token, self.name, :hope, nil, :protection )
+        FightRecord.addEvent( @token, self.name, :hope, nil, "Avoid Second Wound" )
         return 
       end
     end
@@ -388,9 +413,13 @@ class Hero < Opponent
   def hit? opponent
     if !super && (@current_hope > 0)
       attribute_bonus = @body + ( @favoured_weapon ? @f_body : 0 )
-      if !@dice.sauron? && (self.tnFor(opponent) - @dice.total <= attribute_bonus && @dice.tengwars > 1 )
+      if !@dice.sauron? && (self.tnFor(opponent) - @dice.total <= attribute_bonus && @dice.tengwars > 0 )
         @current_hope -= 1
-        FightRecord.addEvent( @token, self.name, :hope, nil, :attack)
+        FightRecord.addEvent( @token, self.name, :hope, nil, "Turn Miss into Hit on #{@dice.tengwars} Tengwars")
+        @dice.bonus += attribute_bonus # modify the dice and return super
+      elsif !@dice.sauron? && (self.tnFor(opponent) - @dice.total <= attribute_bonus) && ( @dice.feat >= self.weapon.edge )
+        @current_hope -= 1
+        FightRecord.addEvent( @token, self.name, :hope, nil, "Turn Miss into Pierce")
         @dice.bonus += attribute_bonus # modify the dice and return super
       end
     end     
