@@ -21,6 +21,7 @@ class Hero < Opponent
     @wits = 0
     @heart = 0
     @hope = 0
+    @knockback_rule = false
     @f_heart = 0
     @f_wits = 0
     @f_body = 0
@@ -46,6 +47,7 @@ class Hero < Opponent
     @body = background[:body]
     @heart = background[:heart]
     @wits = background[:wits]
+    @knockback_rule = params.keys.include? "knockback_rule"
     @hope = params[:hope].to_i
     self.weapon = params[:weapon].to_sym
     self.armor = params[:armor].to_sym
@@ -215,8 +217,15 @@ class Hero < Opponent
   
   def takeDamage opponent, amount
     if HouseRule.include? :angelalexs_rule
-      amount = [amount - self.protection[0], 0].max
-      super opponent, amount
+      super opponent, [amount - self.protection[0], 0].max
+      return
+    end
+    
+    if @knockback_rule && opponent.dice.tengwars > 1
+      @conditions.add :knockback
+      FightRecord.addEvent( @token, self.name, :knockback, nil, nil )
+      super opponent, (amount / 2)
+      return
     else
       super
     end

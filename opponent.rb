@@ -323,10 +323,12 @@ class Opponent
   def attack( opponent)
     
     # skip turn if disarmed
-    if @conditions.include? :disarmed
-      @conditions.delete :disarmed
-      FightRecord.addEvent( @token, self.name, :skip, nil, nil )
-      return
+    [:disarmed, :knockback].each do | condition |
+      if @conditions.include? condition
+        @conditions.delete condition
+        FightRecord.addEvent( @token, self.name, :skip, nil, nil )
+        return
+      end
     end
     
     if( opponent.is_a? Array )

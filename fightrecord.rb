@@ -136,6 +136,8 @@ class FightRecord
         end
       when :disarmed
         result += event[:player] + " is <b>disarmed</b>!"
+      when :knockback
+        result += "#{event[:player]} rolls with the blow for half damage."
       when :skip
         result += event[:player] + " misses a turn."
       when :out_of_hate
