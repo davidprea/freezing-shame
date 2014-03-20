@@ -39,6 +39,9 @@
 								= partial :backgrounds, :layout => false, :locals => { :culture => "None", :background => "None"}
 						#attributes
 							= partial :attributes, :layout=>false,:locals => {:attributes =>{:body=>0,:heart=>0,:wits=>0}}
+						
+						#cultural_blessing
+							= partial :cultural_blessing, :layout=>false, :locals => {:culture => "Hero" }
 							
 						#skills
 							= partial :skills, :layout => false

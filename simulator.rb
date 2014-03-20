@@ -128,6 +128,10 @@ get('/attributes') do
   partial( :attributes, :layout => false, :locals => {:attributes =>{:body => params[:body], :heart => params[:heart], :wits => params[:wits]}})
 end
 
+get('/cultural_blessing') do
+  partial( :cultural_blessing, :layout => false, :locals => { :culture => params[:culture]})
+end
+
 get('/feats') do
   partial( :feats, :layout => false, :locals => { :culture => params[:culture]})
 end

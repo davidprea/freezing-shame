@@ -12,6 +12,14 @@ class Woodman < Hero
     10
   end
   
+  def self.culturalBlessing 
+    {
+      :name => "Woodcrafty", 
+      :tooltip => "'When the Woodmen fight in the woods, they use their favoured Wits score as their basic Parry rating.'", 
+      :implemented => false
+    } 
+  end
+  
   def self.virtues #modifiers applied to self
     super # + [:a_hunters_resolve, :herbal_remedies, :hound_of_mirkwood, :natural_watchfulness, :staunching_song ] 
   end

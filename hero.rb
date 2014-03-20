@@ -9,6 +9,7 @@ class Hero < Opponent
   attr_accessor :fatigue, :stance
   attr_accessor :wisdom, :valor
   attr_accessor :hope, :current_hope
+  attr_accessor :cultural_blessing_enabled
   attr_accessor :feats #generic for Virtues AND Rewards
   attr_accessor :weapon_favoured, :r_weapon_favoured # booleans
   
@@ -22,6 +23,7 @@ class Hero < Opponent
     @heart = 0
     @hope = 0
     @knockback_rule = false
+    @cultural_blessing_enabled = true
     @f_heart = 0
     @f_wits = 0
     @f_body = 0
@@ -29,6 +31,14 @@ class Hero < Opponent
     @wisdom = 0
     @valor = 0
     @feats = Set.new
+  end
+  
+  def self.culturalBlessing
+    {
+      :name => "No culture chosen.", 
+      :tooltip => "Unimplemented blessings will be flagged with: ",
+      :implemented => false
+    } # implemented_by_subclasses
   end
   
   def self.fromParams params
@@ -48,6 +58,7 @@ class Hero < Opponent
     @heart = background[:heart]
     @wits = background[:wits]
     @knockback_rule = params.keys.include? "knockback_rule"
+    @cultural_blessing_enabled = params[:cultural_blessing] == "on"
     @hope = params[:hope].to_i
     self.weapon = params[:weapon].to_sym
     self.armor = params[:armor].to_sym

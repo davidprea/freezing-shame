@@ -1,0 +1,7 @@
+%fieldset
+	%legend
+		Cultural Blessing
+	-blessing=(Object.const_get(culture)).culturalBlessing
+	%input{ :type => "checkbox", :name => "cultural_blessing", :disabled => !blessing[:implemented], :checked => blessing[:implemented] }
+	%label{ :style => "italics", :title => "#{blessing[:tooltip]}#{(blessing[:implemented] ? "" : " NOT YET IMPLEMENTED")}" }
+		=blessing[:name]

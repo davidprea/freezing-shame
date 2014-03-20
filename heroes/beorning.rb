@@ -22,6 +22,15 @@ class Beorning < Hero
     target
   end
   
+  def self.culturalBlessing
+    {
+      :name => "Furious", 
+      :tooltip => "'When a Beorning is wounded in battle, he ignores the effects of being Weary and Miserable for the duration of combat.'", 
+      :implemented => true
+    } 
+  end
+  
+  
   
   def self.rewardGearData
     [
@@ -45,7 +54,7 @@ class Beorning < Hero
   end
 
   def weary?
-    @wounds > 0 ? false : super
+    (@cultural_blessing_enabled && @wounds > 0) ? false : super
   end
   
   def virtuesAndRewardsList

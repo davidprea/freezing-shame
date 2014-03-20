@@ -13,6 +13,14 @@ class ShireHobbit < Hero
     16
   end
   
+  def self.culturalBlessing 
+    {
+      :name => "Hobbit-sense", 
+      :tooltip => "'When making a Wisdom roll, Hobbits can roll the Feat die twice, and keep the best result.'",
+      :implemented => false
+    } 
+  end
+  
   def self.hopeBase
     12
   end

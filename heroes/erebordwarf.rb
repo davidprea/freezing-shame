@@ -9,6 +9,13 @@ class EreborDwarf < Hero
     "Dwarf of Erebor"
   end
   
+  def self.culturalBlessing 
+    {
+      :name => "Redoubtable", 
+      :tooltip => "'Dwarf characters calculate their Fatigue threshold by adding up the Encumbrance ratings of all the items they are carrying, and then subtracting their favoured Heart score from the total.'" , 
+      :implemented => true 
+      } 
+  end
   
   def hit opponent
     if @dice.gandalf? && (@weapon.qualities.include? :azanulbizar)
@@ -35,7 +42,7 @@ class EreborDwarf < Hero
   end 
   
   def totalFatigue
-    [super - (@heart + @f_heart), 0].max
+    @cultural_blessing_enabled ? [super - (@heart + @f_heart), 0].max : super
   end
   
    

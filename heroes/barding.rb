@@ -12,6 +12,15 @@ class Barding < Hero
     8
   end
   
+  def self.culturalBlessing
+    {
+      :name => "Stout-hearted", 
+      :tooltip => "'When making a Fear test, Barding characters can roll the Feat die twice, and keep the best result.'",
+      :implemented => false
+    } 
+  end
+  
+  
   def self.virtues #modifiers applied to self
     super
     #super + [:birthright, :fierce_shot, :kings_men, :swordmaster, :woeful_foresight ] 

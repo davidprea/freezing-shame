@@ -12,6 +12,14 @@ class MirkwoodElf < Hero
     22
   end
   
+  def self.culturalBlessing 
+    {
+      :name => "Folk of the Dark", 
+      :tooltip => "'When an Elf of Mirkwood is inside a forest or under the earth, or it is night, all his Attribute bonuses are based on his favoured rating.'", 
+      :implemented => false
+    } 
+  end
+  
   def self.hopeBase
     8
   end

@@ -23,6 +23,7 @@ function setCulture(select) {
 	updateFormElement(select, 'feats');
 	updateFormElement(select, 'gear');
 	updateFormElement(select, 'submit_button')
+	updateFormElement(select, 'cultural_blessing')
 }
 
 function updateRewards(reward) {
