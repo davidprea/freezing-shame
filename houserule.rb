@@ -15,8 +15,13 @@ class HouseRule
         :tooltip => "Max one extra success in Defensive Stance; max three in Forward."
       },
       :angelalexs_rule => {
-        :name => "Angelalex's Rule",
+        :name => "Angelalex's Rule (Players)",
         :tooltip => "Armor also reduces incoming damage by 1 per 1d of protection."
+      },
+      
+      :angelalexs_rule_monsters => {
+        :name => "Angelaxe's Rule (Monsters)",
+        :tooltip => "Fair is fair, right?"
       }
     }
   end

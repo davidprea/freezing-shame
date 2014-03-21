@@ -47,6 +47,8 @@ class Monster < Opponent
       :great_leap => { :name => "Great Leap", :tooltip => "Unimplemented."},
       :mirkwood_dweller => { :name => "Mirkwood Dweller", :tooltip => "Unimplemented."},
       :dreadful_spells => { :name => "Dreadful Spells", :tooltip => "Unimplemented."},
+      :dwarf_hatred => { :name => "Hatred (Dwarves)", :tooltip => "All rolls considered 'favoured' against Dwarves."},
+      :hobbit_hatred => { :name => "Hatred (Hobbits)", :tooltip => "All rolls considered 'favoured' against Hobbits."},
       :hatred => { :name => "Hatred", :tooltip => "Unimplemented."},
 
 #      :symbol => { :name => "", :tooltip => "Unimplemented."},
@@ -85,6 +87,12 @@ class Monster < Opponent
       FightRecord.addEvent( @token, self.name, :hate, nil, :hideous_toughness.to_s )
       self.spendHate
     end
+    
+    if HouseRule.include? :angelalexs_rule_monsters
+      super opponent, [amount - self.protection[0], 0].max
+      return
+    end
+    
     super( opponent, amount ) # have to manually send params because damage may have changed? Not sure.
   end
   
@@ -113,7 +121,8 @@ class Monster < Opponent
 #      "Secondary Weapon" => ( @secondary_weapon ? @secondary_weapon.to_s : "None"),
       "Protection" => self.protection[0].to_s + "d +" + self.protection[1].to_s,
       "Parry" => self.parry,
-      "Special Abilities" => @abilities.keys.join(',')
+      "Special Abilities" => @abilities.keys.join(','),
+      "Optional Abilities" => (@optional_abilities ? @optional_abilities.keys.join(',') : nil )
     }
   end
   
@@ -132,6 +141,9 @@ class Monster < Opponent
     type = self.class.types[typeSymbol.to_sym]
     @name = type[:name]
     @abilities = Hash[type[:abilities].collect{ |k| [k,Monster.abilities[k]]}] # yikes. take array of symbols and build hash
+    if( type[:optional_abilities] )
+      @optional_abilities = Hash[type[:optional_abilities].collect{ |k| [k,Monster.abilities[k]]}]
+    end
     @attribute_level = type[:attribute_level]
     @hate = type[:hate]
     @current_hate = @hate
@@ -143,7 +155,7 @@ class Monster < Opponent
     @armor = type[:armor]
     @size = type[:size]
     @parry = type[:parry]
-    @shield = type[:shield]
+    self.shield = type[:shield]
     self.parseWeapons type[:weapons]
 #    weaponKey = weapon ? weapon : type[:weapons].keys[0]; #default to first weapon
 #    self.weapon = self.weapons[weaponKey];
@@ -175,6 +187,7 @@ class Monster < Opponent
     if @weapons && @weapons.size > 0
       @weapons[@current_weapon_index][:weapon]
     else
+      puts "Houston we have a weapon problem #{@weapons}"
       super
     end
   end
@@ -227,7 +240,7 @@ class Monster < Opponent
      end
      @shield
    end
-
+   
 
    def armor
      if @armor == nil
@@ -235,10 +248,10 @@ class Monster < Opponent
      end
      @armor
    end
-
+   
    def shield
      if @shield == nil
-       @shield = 0
+       @shield = Shield.new( "None", 0, 0)
      end
      @shield
    end
@@ -289,7 +302,7 @@ class Monster < Opponent
   
   
   def parry opponent=nil
-    @parry + ((@shield && self.weapon.allows_shield?) ? @shield : 0)
+    @parry + ((@shield && self.weapon.allows_shield?) ? @shield.value : 0)
   end
   
   def reset

@@ -1,6 +1,6 @@
 -stats.keys.sort.each do | key |
 	%p
-		-if key != "Special Abilities"
+		-if key != "Special Abilities" && key != "Optional Abilities"
 			=key + ": " + stats[key].to_s
 -if stats.include? "Special Abilities"
 	-m=(Object.const_get(monsterclass))
@@ -9,4 +9,11 @@
 			%input{ :type => "checkbox", :name => s, :checked => true }
 				%label.monsterability{ :title => m.abilities[s.to_sym][:tooltip] }
 					=m.abilities[s.to_sym][:name]
+	-if stats["Optional Abilities"]
+		-stats["Optional Abilities"].split(',').each do |s|
+			%p
+				%input{ :type => "checkbox", :name => s, :checked => false }
+					%label.monsterability{ :title => m.abilities[s.to_sym][:tooltip] }
+						=m.abilities[s.to_sym][:name]
+		
 
