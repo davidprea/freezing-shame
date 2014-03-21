@@ -20,7 +20,7 @@ class HouseRule
       },
       
       :angelalexs_rule_monsters => {
-        :name => "Angelaxe's Rule (Monsters)",
+        :name => "Angelalexe's Rule (Monsters)",
         :tooltip => "Fair is fair, right?"
       }
     }
