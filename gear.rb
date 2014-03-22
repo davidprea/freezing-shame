@@ -16,13 +16,36 @@ class Gear < Equipment
     self.new( "None", 0, 0 )
   end
   
+  def reset
+    if( rand() < 0.3 )  
+      @value = @undamaged_value
+    end
+  end
+
+  
+  def value=(newValue)
+    if !newValue
+      puts "#{self.class} received a value of nil"
+    end
+    @value = newValue
+    @undamaged_value = @value
+  end
+
+  
+  def takeDamage amount=1
+    if !@undamaged_value
+      @undamaged_value = @value
+    end
+    @value = [@value-amount,0].max
+  end
+   
   def encumbrance
     (@qualities.include? :cunning_make) ? [(@encumbrance-2),0].max : @encumbrance
   end
   
   def initialize( name, value, encumbrance )
     super( name, encumbrance )
-    @value = value # prot for armor and helms, parry for shields
+    self.value = value # prot for armor and helms, parry for shields
   end
   
   # use this for cloning equipment
@@ -54,6 +77,8 @@ class Protection < Gear
 end
 
 class Armor < Protection
+  
+  
   def qualityList
     [:cunning_make_armor, :close_fitting_armor] 
   end
@@ -100,8 +125,9 @@ class Shield < Gear
       @value + 1
     elsif is_broken 
       0
+    else
+      super
     end
-    @value
   end
   
   # use this for cloning equipment

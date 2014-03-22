@@ -138,6 +138,8 @@ class FightRecord
         result += event[:player] + " is <b>disarmed</b>!"
       when :knockback
         result += "#{event[:player]} rolls with the blow for half damage."
+      when :armor_damage
+        result += "#{event[:player]}'s armor gets damaged! (#{event[:value]} left)."
       when :skip
         result += event[:player] + " misses a turn."
       when :out_of_hate

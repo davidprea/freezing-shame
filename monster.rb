@@ -240,21 +240,7 @@ class Monster < Opponent
      end
      @shield
    end
-   
 
-   def armor
-     if @armor == nil
-       @armor = Armor.new( @name + " Armor", 0, 0 )
-     end
-     @armor
-   end
-   
-   def shield
-     if @shield == nil
-       @shield = Shield.new( "None", 0, 0)
-     end
-     @shield
-   end
   
    def protection opponent=nil
      if opponent && (opponent.weapon.qualities.include? :splitting) && (opponent.dice.gandalf?)
@@ -302,7 +288,11 @@ class Monster < Opponent
   
   
   def parry opponent=nil
-    super + @parry + ((@shield && self.weapon.allows_shield?) ? @shield.value : 0)
+    if !@parry
+      @parry = 0
+    end
+    
+    super + @parry + ((@shield && self.weapon.allows_shield?) ? self.shield.value : 0)
   end
   
   def reset

@@ -158,9 +158,9 @@ class Opponent
   
   def parry opponent=nil
     if HouseRule.include?(:avenues_rule) 
-      return [@armor.value - 2, 0].max
+      return [self.armor.value - 2, 0].max
     elsif HouseRule.include?(:avenues_rule_modified)
-      return [@armor.value - 3, 0].max
+      return [self.armor.value - 3, 0].max
     else
       return 0
     end
@@ -178,6 +178,9 @@ class Opponent
     @is_shield_broken = false
     @current_endurance = self.maxEndurance
     @conditions = Set.new
+    self.armor.reset
+    self.shield.reset
+    self.helm.reset
   end
   
   def alive?
@@ -208,6 +211,10 @@ class Opponent
     self.dice.bonus = prot[1]
     FightRecord.addEvent( @token, self.name, :pierce, nil, nil )
     FightRecord.addEvent( @token, self.name, :armor_check, @dice, tn )
+    if( HouseRule.include?(:richs_rule) && self.dice.sauron? )
+      self.armor.takeDamage
+      FightRecord.addEvent( @token, self.name, :armor_damage, nil, self.armor.value )
+    end
     self.checkForWound tn
   end
   

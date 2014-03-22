@@ -283,6 +283,7 @@ class Hero < Opponent
     result[:fell_handed] = {:name => "Fell-handed", :tooltip => "Increase close combat damage by 1", :implemented => true}
     result[:gifted] = {:name => "Gifted", :implemented => false}
     result[:resilience] = {:name => "Resilience", :tooltip => "Increase endurance by 2", :implemented => true}
+    result[:thwarting] = {:name => "Thwarting", :tooltip => "Increase Parry by 1 (unofficial).", :implemented => true}
     result
   end
   
@@ -397,11 +398,11 @@ class Hero < Opponent
 
   
   def parry opponent=nil
-    super + ((@conditions.include? :bewildered) ? 0 : self.wits) + self.shieldValue
+    super + ((@conditions.include? :bewildered) ? 0 : self.wits) + self.shieldValue + (@feats.include?(:thwarting) ? 1 : 0)
   end
   
   def shieldValue
-    ((@shield && self.weapon.allows_shield?) ? @shield.value : 0 )
+    ((@shield && self.weapon.allows_shield?) ? self.shield.value : 0 )
   end
   
   
