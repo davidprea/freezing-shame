@@ -22,6 +22,11 @@ class HouseRule
       :angelalexs_rule_monsters => {
         :name => "Angelalexe's Rule (Monsters)",
         :tooltip => "Fair is fair, right?"
+      },
+      
+      :avenues_rule => {
+        :name => "Avenue's Rule",
+        :tooltip => "Metal armor also increases Parry by 3 less than it's armor rating."
       }
     }
   end

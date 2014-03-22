@@ -394,17 +394,10 @@ class Hero < Opponent
     # now modify character or gear, when appropriate...
   end
   
- 
-  def self.sample
-    h = Hero.new
-    h.parry = 3
-    h.stance = 9
-    h.weapon_skill = 3
-    h
-  end
+
   
   def parry opponent=nil
-    ((@conditions.include? :bewildered) ? 0 : self.wits) + self.shieldValue
+    ((@conditions.include? :bewildered) ? 0 : self.wits) + self.shieldValue + (HouseRule.include?(:avenues_rule) ? [@armor.value - 2, 0].max : 0 )
   end
   
   def shieldValue
