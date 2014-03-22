@@ -397,7 +397,7 @@ class Hero < Opponent
 
   
   def parry opponent=nil
-    ((@conditions.include? :bewildered) ? 0 : self.wits) + self.shieldValue + (HouseRule.include?(:avenues_rule) ? [@armor.value - 2, 0].max : 0 )
+    super + ((@conditions.include? :bewildered) ? 0 : self.wits) + self.shieldValue
   end
   
   def shieldValue

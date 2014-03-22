@@ -152,7 +152,7 @@ class Monster < Opponent
     end
     @endurance = type[:endurance]
     @current_endurance = @endurance
-    @armor = type[:armor]
+    self.armor = type[:armor]
     @size = type[:size]
     @parry = type[:parry]
     self.shield = type[:shield]
@@ -244,7 +244,7 @@ class Monster < Opponent
 
    def armor
      if @armor == nil
-       @armor = 0
+       @armor = Armor.new( @name + " Armor", 0, 0 )
      end
      @armor
    end
@@ -258,9 +258,9 @@ class Monster < Opponent
   
    def protection opponent=nil
      if opponent && (opponent.weapon.qualities.include? :splitting) && (opponent.dice.gandalf?)
-       [@armor-1,0]
+       [@armor.value-1,0]
      else
-       [@armor, 0]
+       [@armor.value, 0]
      end
    end
       
@@ -302,7 +302,7 @@ class Monster < Opponent
   
   
   def parry opponent=nil
-    @parry + ((@shield && self.weapon.allows_shield?) ? @shield.value : 0)
+    super + @parry + ((@shield && self.weapon.allows_shield?) ? @shield.value : 0)
   end
   
   def reset

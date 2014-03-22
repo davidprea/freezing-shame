@@ -26,7 +26,11 @@ class HouseRule
       
       :avenues_rule => {
         :name => "Avenue's Rule",
-        :tooltip => "Metal armor also increases Parry by 3 less than it's armor rating."
+        :tooltip => "Armor also increases Parry by 2 less than it's armor rating (min 0). Heroes and Adversaries."
+      },
+      :avenues_rule_modified => {
+        :name => "Modified Avenue's Rule",
+        :tooltip => "Reduces by 3 (min 0) instead of 2."
       }
     }
   end

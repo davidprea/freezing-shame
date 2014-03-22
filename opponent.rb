@@ -157,7 +157,13 @@ class Opponent
   end
   
   def parry opponent=nil
-    0 # implemented by subclasses
+    if HouseRule.include?(:avenues_rule) 
+      return [@armor.value - 2, 0].max
+    elsif HouseRule.include?(:avenues_rule_modified)
+      return [@armor.value - 3, 0].max
+    else
+      return 0
+    end
   end
   
   def wound
