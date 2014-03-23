@@ -12,6 +12,7 @@ class Hero < Opponent
   attr_accessor :cultural_blessing_enabled
   attr_accessor :feats #generic for Virtues AND Rewards
   attr_accessor :weapon_favoured, :r_weapon_favoured # booleans
+  attr_accessor :armor_skill
   
   @@cultures = Set.new
   @@gear = Hash.new
@@ -41,6 +42,7 @@ class Hero < Opponent
     } # implemented_by_subclasses
   end
   
+  
   def self.fromParams params
 #    params.keys.each do | key |
 #     puts key.to_s + ":" + params[key].to_s
@@ -65,6 +67,7 @@ class Hero < Opponent
     self.shield = params[:shield].to_sym
     self.helm = params[:helm].to_sym
     @weapon_skill = params[:weapon_skill].to_i
+    @armor_skill = params[:armor_skill].to_i
     @weapon_favoured = (params[:weapon_favoured] == "on")
     @stance = params[:stance].to_i
     self.class.virtues.keys.each do |v|
@@ -243,7 +246,8 @@ class Hero < Opponent
   end
 
   def encumbrance
-      self.armor.encumbrance + self.helm.encumbrance + self.shield.encumbrance + self.weapon.encumbrance
+    ae = self.armor.encumbrance + self.helm.encumbrance - (HouseRule.include?(:elfcrushers_rule) ? (@armor_skill * 2) : 0 )
+    ae + self.shield.encumbrance + self.weapon.encumbrance
   end
   
   def maxEndurance

@@ -21,6 +21,11 @@ class ShireHobbit < Hero
     } 
   end
   
+  def piercingBlow?
+    super || (self.weapon.qualities.include?(:kings_blade) && self.dice.tengwars > 0)
+  end
+  
+  
   def self.hopeBase
     12
   end

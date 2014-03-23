@@ -311,6 +311,10 @@ class Opponent
   def hit_by? opponent
     true # potentially overriden by subclasses
   end
+  
+  def piercingBlow?
+    self.dice.feat > self.weapon.edge
+  end
     
   def hit opponent
     if( @called_shot )
@@ -323,9 +327,7 @@ class Opponent
     else
       opponent.getHitBy self      
     
-      if (self.weapon.hasQuality?(:kings_blade) && (self.dice.tengwars > 0))
-        opponent.wound 
-      elsif @dice.feat >= self.weapon.edge
+      if self.piercingBlow?
         opponent.rollProtectionAgainst self 
       end
     end

@@ -36,6 +36,12 @@ class HouseRule
         :name => "Rich's Rule",
         :tooltip => "When a Sauron is rolled for a protection roll, your armor is damaged and has its value reduced by 1d (minimum zero)."
       }
+#      ,
+#      :elfcrushers_rule => {
+#        :name => "Elfcrusher's Rule",
+#        :tooltip => "A new skill, Armor, is added. It costs XP, not AP, and each rank reduces armor encumbrance by 2 (min 0)."
+#      }
+      
     }
   end
   
