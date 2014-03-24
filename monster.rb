@@ -116,7 +116,7 @@ class Monster < Opponent
       "Endurance" => self.endurance,
       "Hate" => self.hate,
 #      "Unique" => self.unique.to_s,
-      "Weapon Skill" => self.weapon_skill,
+      "Weapon Skill" => self.weaponSkill,
       "Weapon" => self.weapon.to_s,
 #      "Secondary Weapon" => ( @secondary_weapon ? @secondary_weapon.to_s : "None"),
       "Protection" => self.protection[0].to_s + "d +" + self.protection[1].to_s,

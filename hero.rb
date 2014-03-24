@@ -42,10 +42,13 @@ class Hero < Opponent
     } # implemented_by_subclasses
   end
   
+
+  
+  
   
   def self.fromParams params
 #    params.keys.each do | key |
-#     puts key.to_s + ":" + params[key].to_s
+#      puts key.to_s + ":" + params[key].to_s
 #    end
     heroClass = (Object.const_get(params[:culture]));
     hero = heroClass.new
@@ -117,9 +120,9 @@ class Hero < Opponent
   
   def to_hash
     { 
-      "Body" => @body.to_s + "(" + @f_body.to_s + ")",
-      "Hearth" => @heart.to_s + "(" + @f_heart.to_s + ")",
-      "Wits" => @wits.to_s + "(" + @f_wits.to_s + ")",
+      "Body" => "#{body}(#{self.f_body})",
+      "Heart" => "#{heart}(#{self.f_heart})",
+      "Wits" => "#{wits}(#{self.f_wits})",
       "Parry" => self.parry, 
       "Protection" => (self.protection[0].to_s + "d + " + self.protection[1].to_s), 
       "Weapon" => self.weapon.to_s, 
@@ -297,6 +300,18 @@ class Hero < Opponent
     @wits = new_wits
     @f_wits = favoured_bonus
   end
+  
+  def f_body
+    @f_body + (self.hasVirtue?(:gifted_body) ? 1 : 0 )
+  end
+  
+  def f_heart
+    @f_heart + (self.hasVirtue?(:gifted_heart) ? 1 : 0 )
+  end
+  
+  def f_wits
+    @f_wits + (self.hasVirtue?(:gifted_wits) ? 1 : 0 )
+  end
 
   def self.virtues 
     result = {}
@@ -304,7 +319,9 @@ class Hero < Opponent
     result[:dour_handed] = {:name => "Dour-handed", :tooltip => "Increase ranged damage by 1", :implemented => true}
     result[:expertise] = {:name => "Expertise", :implemented => false}
     result[:fell_handed] = {:name => "Fell-handed", :tooltip => "Increase close combat damage by 1", :implemented => true}
-    result[:gifted] = {:name => "Gifted", :implemented => false}
+    result[:gifted_body] = {:name => "Gifted (Body)", :tooltip => "Raise Favoured Body score by 1", :implemented => true}
+    result[:gifted_heart] = {:name => "Gifted (Heart)", :tooltip => "Raise Favoured Heart score by 1", :implemented => true}
+    result[:gifted_wits] = {:name => "Gifted (Wits)", :tooltip => "Raise Favoured Wits score by 1", :implemented => true}
     result[:resilience] = {:name => "Resilience", :tooltip => "Increase endurance by 2", :implemented => true}
     result[:thwarting] = {:name => "Thwarting", :tooltip => "Increase Parry by 1 (unofficial).", :implemented => true}
     result
@@ -454,7 +471,7 @@ class Hero < Opponent
   
   def hit? opponent
     if !super && (@current_hope > 0)
-      attribute_bonus = @body + ( @favoured_weapon ? @f_body : 0 )
+      attribute_bonus = @body + ( @favoured_weapon ? self.f_body : 0 )
       if !@dice.sauron? && (self.tnFor(opponent) - @dice.total <= attribute_bonus && @dice.tengwars > 0 )
         self.spendHope
         FightRecord.addEvent( self, :hope, {:type => :tengwar, :hopeleft => @current_hope } )

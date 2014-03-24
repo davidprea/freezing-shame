@@ -44,7 +44,7 @@ class EreborDwarf < Hero
   def calcEncumbrance
     super
     if @cultural_blessing_enabled
-      @encumbrance = [@encumbrance - (@heart + @f_heart), 0].max
+      @encumbrance = [@encumbrance - (@heart + self.f_heart), 0].max
     end
     @encumbrance
   end

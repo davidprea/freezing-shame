@@ -38,7 +38,7 @@ class ShireHobbit < Hero
     end
     p = super
     if(opponent && (opponent.size > 1) && (@feats.include? :small_folk))
-      return p + @f_wits
+      return p + self.f_wits
     end
     p
   end
