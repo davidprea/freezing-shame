@@ -62,19 +62,22 @@ class Hero < Opponent
     @knockback_rule = params.keys.include? "knockback_rule"
     @cultural_blessing_enabled = params[:cultural_blessing] == "on"
     @hope = params[:hope].to_i
-    self.weapon = params[:weapon].to_sym
     self.armor = params[:armor].to_sym
     self.shield = params[:shield].to_sym
     self.helm = params[:helm].to_sym
-    @weapon_skill = params[:weapon_skill].to_i
     @armor_skill = params[:armor_skill].to_i
-    @weapon_favoured = (params[:weapon_favoured] == "on")
+
+    # weapons(s?)
+    weapon_favoured = (params[:weapon_favoured] == "on")
+    weapon_skill = params[:weapon_skill].to_i
+    weapon = params[:weapon].to_sym
+    self.addWeapon( weapon, weapon_skill, weapon_favoured )
+    
     @stance = params[:stance].to_i
+    
     self.class.virtues.keys.each do |v|
-#      puts "Virtue Key: " + v.to_s
       if params.keys.include? v.to_s
         self.addVirtue v
-#        puts "Virtue found: " + v.to_s
       end
     end
     
@@ -123,12 +126,24 @@ class Hero < Opponent
       "Endurance" => self.endurance, 
       "Fatigue" => self.fatigue,
       "Virtues" => "(" + @feats.to_a.join(", ") + ")" 
-      }
+    }
+  end
+  
+  def encumbrance
+    if !@encumbrance
+      self.calcEncumbrance
+    end
+    @encumbrance
+  end
+  
+  def calcEncumbrance
+    @encumbrance = self.armor.encumbrance + self.helm.encumbrance + self.shield.encumbrance + self.weapon.encumbrance
+    @encumbrance
   end
   
   
   
-  def self.gear type = nil, reward_symbol = nil
+  def self.gear gClass = nil, reward_symbol = nil
 
     if @@gear.size == 0
       @@gear[:dagger] = Weapon.new( "Dagger", 3, 12, 12, 0, :one_handed, nil );
@@ -166,9 +181,9 @@ class Hero < Opponent
     end
     
         
-    if type != nil && type != "None"
-      type = (type.is_a? String) ? Object.const_get(type) : type
-      return @@gear.select{ |k,v| v.is_a? type }
+    if gClass != nil && gClass != "None"
+      gClass = (gClass.class == String) ? Object.const_get(gClass) : gClass
+      return @@gear.select{ |k,v| v.class == gClass }
     end
     
     @@gear
@@ -225,7 +240,7 @@ class Hero < Opponent
     0 # implemented by subclasses
   end
   
-  def totalFatigue
+  def fatigue
     self.encumbrance - ((HouseRule.include? :belegs_rule) ? @body : 0)
   end
   
@@ -236,8 +251,8 @@ class Hero < Opponent
     end
     
     if @knockback_rule && opponent.dice.tengwars > 1
-      @conditions.add :knockback
-      FightRecord.addEvent( @token, self.name, :knockback, nil, nil )
+      self.addCondition :knockback
+      FightRecord.addEvent( self, :knockback, nil )
       super opponent, (amount / 2)
       return
     else
@@ -245,9 +260,13 @@ class Hero < Opponent
     end
   end
 
-  def encumbrance
-    ae = self.armor.encumbrance + self.helm.encumbrance - (HouseRule.include?(:elfcrushers_rule) ? (@armor_skill * 2) : 0 )
-    ae + self.shield.encumbrance + self.weapon.encumbrance
+  
+  def calculateEncumbrance
+    super
+    if( HouseRule.include? :belegs_rule )
+      @encumbranse = [ 0, @encumbrance - self.body].max
+    end
+    @encumbrance
   end
   
   def maxEndurance
@@ -363,10 +382,10 @@ class Hero < Opponent
   
   def weaponDamage
     damage = super
-    if (self.hasVirtue? :dour_handed) && (@weapon.type == :ranged)
+    if (self.hasVirtue? :dour_handed) && (self.weapon.type == :ranged)
       damage += 1
     end
-    if (self.hasVirtue? :fell_handed) && (@weapon.type != :ranged)
+    if (self.hasVirtue? :fell_handed) && (self.weapon.type != :ranged)
       damage += 1
     end
     damage
@@ -385,6 +404,7 @@ class Hero < Opponent
     @current_hope = @hope
   end
   
+  #wtf is this method for?
   def feat symbol
     # look up mask value for this symbol
     maskValue = self.maskValueFor symbol
@@ -399,14 +419,18 @@ class Hero < Opponent
     # now modify character or gear, when appropriate...
   end
   
-
-  
-  def parry opponent=nil
-    super + ((@conditions.include? :bewildered) ? 0 : self.wits) + self.shieldValue + (@feats.include?(:thwarting) ? 1 : 0)
+  def spendHope
+    @current_hope -= 1
   end
   
-  def shieldValue
-    ((@shield && self.weapon.allows_shield?) ? self.shield.value : 0 )
+  def parry opponent=nil
+    if self.hasCondition? :fumble
+      return 0
+    elsif self.hasCondition? :bewildered
+      return 0
+    else
+      return super + @wits + self.shieldValue + (@feats.include?(:thwarting) ? 1 : 0)
+    end
   end
   
   
@@ -418,8 +442,8 @@ class Hero < Opponent
     test = @dice.test tn
     if !test && @current_hope > 0 && @wounds > 0
       if (tn - @dice.total) <= @body
-        @current_hope -= 1
-        FightRecord.addEvent( @token, self.name, :hope, nil, "Avoid Second Wound" )
+        self.spendHope
+        FightRecord.addEvent( self, :hope, {:type => :protection, :hope_left => @current_hope} )
         return 
       end
     end
@@ -432,12 +456,12 @@ class Hero < Opponent
     if !super && (@current_hope > 0)
       attribute_bonus = @body + ( @favoured_weapon ? @f_body : 0 )
       if !@dice.sauron? && (self.tnFor(opponent) - @dice.total <= attribute_bonus && @dice.tengwars > 0 )
-        @current_hope -= 1
-        FightRecord.addEvent( @token, self.name, :hope, nil, "Turn Miss into Hit on #{@dice.tengwars} Tengwars")
+        self.spendHope
+        FightRecord.addEvent( self, :hope, {:type => :tengwar, :hopeleft => @current_hope } )
         @dice.bonus += attribute_bonus # modify the dice and return super
       elsif !@dice.sauron? && (self.tnFor(opponent) - @dice.total <= attribute_bonus) && ( @dice.feat >= self.weapon.edge )
-        @current_hope -= 1
-        FightRecord.addEvent( @token, self.name, :hope, nil, "Turn Miss into Pierce")
+        self.spendHope
+        FightRecord.addEvent( self, :hope, {:type => :pierce, :hope_left => @current_hope } )
         @dice.bonus += attribute_bonus # modify the dice and return super
       end
     end     
@@ -446,11 +470,11 @@ class Hero < Opponent
   
   
   def tn opponent  # this is TN to get hit
-    @stance + ((@conditions.include? :bewildered) ? 0 : self.parry)
+    @stance + ((self.hasCondition? :bewildered) ? 0 : self.parry)
   end
   
   def alive?
-    return super && wounds < 2
+    return super && @wounds < 2
   end
   
   def tnFor opponent  # TN to hit
@@ -459,7 +483,7 @@ class Hero < Opponent
   
   
   def weary?
-    super || (self.totalFatigue > @current_endurance)
+    super || (self.encumbrance >= @current_endurance)
   end
   
   def attackRoll

@@ -30,7 +30,7 @@ class MirkwoodElf < Hero
   end
   
   def weaponInjury
-    if @dice.gandalf? && (@weapon.qualities.include :bitter)
+    if @dice.gandalf? && (self.weapon.hasQuality? :bitter)
       super + 4
     else
       super
@@ -38,7 +38,7 @@ class MirkwoodElf < Hero
   end
   
   def shieldValue
-    if @shield && (@shield.qualities.include? :spearmans)
+    if @shield && (self.shield.hasQuality? :spearmans)
       @shield.value
     else
       super

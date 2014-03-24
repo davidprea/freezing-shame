@@ -75,7 +75,7 @@ class Monster < Opponent
     damage = super
     if( (@abilities.include? :horrible_strength) && @current_hate > 0 && (rand() < 0.5) )
       damage += @attribute_level
-        FightRecord.addEvent( @token, self.name, :hate, nil, :horrible_strength.to_s )
+        FightRecord.addEvent( self, :hate, {:type => :horrible_strength} )
       self.spendHate
     end
     damage
@@ -84,7 +84,7 @@ class Monster < Opponent
   def takeDamage( opponent, amount )
     if( ( @abilities.include? :hideous_toughness ) && amount >= @attribute_level && @current_hate > 0 )
       amount -= @attribute_level
-      FightRecord.addEvent( @token, self.name, :hate, nil, :hideous_toughness.to_s )
+      FightRecord.addEvent( self, :hate, {:type => :hideous_toughness} )
       self.spendHate
     end
     
@@ -99,14 +99,14 @@ class Monster < Opponent
   def spendHate
     @current_hate -= 1
     if( @current_hate < 1 )
-      FightRecord.addEvent( @token, self.name, :out_of_hate, nil, nil )
+      FightRecord.addEvent( self, :out_of_hate, nil )
     end
   end
   
   
   def attackerRolledSauron
     if @sauron_rule
-      @called_shot = true
+      self.addCondition :called_shot
     end
   end
   
@@ -184,31 +184,31 @@ class Monster < Opponent
   end
   
   def weapon
-    if @weapons && @weapons.size > 0
-      @weapons[@current_weapon_index][:weapon]
-    else
-      puts "Houston we have a weapon problem #{@weapons}"
-      super
-    end
+    super @current_weapon_index
+  end
+  
+  def weaponSkill
+    super @current_weapon_index
   end
   
   def rollProtectionAgainst opponent
     super
     if( @abilities.keys.include? :thick_hide ) && @dice.tengwars > 0
-      opponent.conditions.add :disarmed
-      FightRecord.addEvent( @token, self.name, :hate, nil, :thick_hide )
-      FightRecord.addEvent( @token, opponent.name, :disarmed, nil, nil )
+      opponent.addCondition :disarmed
+      FightRecord.addEvent( self, :hate, {:type => :thick_hide} )
+      FightRecord.addEvent( self, :disarmed, nil ) # should move this addConditions...
     end
   end
   
+
   
-  def weapon_skill
-    if @weapons && @weapons.size > 0
-      @weapons[@current_weapon_index][:skill]
-    else
-      super
-    end
-  end
+#  def weapon_skill
+#    if @weapons && @weapons.size > 0
+#      @weapons[@current_weapon_index][:skill]
+#    else
+#      super
+#    end
+#  end
       
   
   def self.createType typeSymbol, weapon=nil
@@ -243,7 +243,7 @@ class Monster < Opponent
 
   
    def protection opponent=nil
-     if opponent && (opponent.weapon.qualities.include? :splitting) && (opponent.dice.gandalf?)
+     if opponent && (opponent.weapon.hasQuality? :splitting) && (opponent.dice.gandalf?)
        [@armor.value-1,0]
      else
        [@armor.value, 0]
@@ -269,7 +269,7 @@ class Monster < Opponent
       tn = opponent.tnFor self
       d = opponent.dice.total
       if (d > tn) && ((d - tn) < (self.parry opponent))
-        FightRecord.addEvent( @token, @name, :hate, nil, :snake_like_speed )
+        FightRecord.addEvent( self, :hate, {:type => :snake_like_speed })
         self.spendHate 
         return false
       end
@@ -280,7 +280,7 @@ class Monster < Opponent
   def post_hit opponent
     if ( opponent.alive? && @current_weapon_index == 0 && (@abilities.include? :savage_assault) && (@dice.tengwars > 0) )
       @current_weapon_index = ((@weapons.size > 1) ? 1 : 0 )
-      FightRecord.addEvent( @token, @name, :hate, nil, :savage_assault )
+      FightRecord.addEvent( self, :hate, {:type => :savage_assault} )
       self.attack opponent
     end
     @current_weapon_index = 0      
@@ -288,11 +288,15 @@ class Monster < Opponent
   
   
   def parry opponent=nil
+    if self.hasCondition? :fumble
+      return 0
+    end
+    
     if !@parry
       @parry = 0
     end
     
-    super + @parry + ((@shield && self.weapon.allows_shield?) ? self.shield.value : 0)
+    super + @parry + self.shieldValue
   end
   
   def reset
@@ -318,10 +322,10 @@ class Monster < Opponent
   
   def alive?
     if( @abilities.include? :craven && @current_hate < 1 )
-      FightRecord.addEvent( @token, :hate, :flees, nil, :craven)
+      FightRecord.addEvent( self, :hate, {:type => :craven})
       return false
     else
-      return super && (wounds < ((@abilities.include? :great_size) ? 2 : 1))
+      return super && (@wounds < ((@abilities.include? :great_size) ? 2 : 1))
     end
   end
   
@@ -336,7 +340,7 @@ class Monster < Opponent
   
   # special ability use
   def bewilder opponent
-    opponent.conditions.add :bewildered
+    opponent.addCondition :bewildered
   end
   
   

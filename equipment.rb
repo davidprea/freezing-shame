@@ -4,7 +4,7 @@ class Equipment
   
   #ugh...Equipment.qualities works just like Opponent.feats...have to refactor at some point
   
-  attr_accessor :encumbrance, :qualities, :name
+  attr_accessor :encumbrance, :name
   
   def initialize( name, encumbrance )
     @name = name
@@ -36,7 +36,7 @@ class Equipment
   
   def addQuality( symbol ) 
     @qualities.add symbol
-#    puts self.class.to_s + " receives quality: " + symbol.to_s
+    # overrride in subclasses to modify stats
   end    
   
 

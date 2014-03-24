@@ -22,7 +22,7 @@ class ShireHobbit < Hero
   end
   
   def piercingBlow?
-    super || (self.weapon.qualities.include?(:kings_blade) && self.dice.tengwars > 0)
+    super || (self.weapon.hasQuality?(:kings_blade) && self.dice.tengwars > 0)
   end
   
   
@@ -31,6 +31,11 @@ class ShireHobbit < Hero
   end
   
   def parry opponent=nil
+      if self.hasCondition? :fumble
+      return 0
+    elsif self.hasCondition? :bewildered
+      return 0
+    end
     p = super
     if(opponent && (opponent.size > 1) && (@feats.include? :small_folk))
       return p + @f_wits
@@ -39,16 +44,18 @@ class ShireHobbit < Hero
   end
   
   def rollProtectionAgainst opponent
-    if( @armor.qualities.include? :lucky)
+    if( @armor.hasQuality? :lucky)
+      # these needs some refactoring...this is nearly identical to superclass method
       tn = opponent.weaponInjury
       self.dice.roll( self.protection[0], self.weary?, 1 )
       self.dice.bonus = self.protection[1]
-      FightRecord.addEvent( @token, self.name, :pierce, nil, nil )
-      FightRecord.addEvent( @token, self.name, :armor_check, @dice, tn )
-      test = @dice.test tn
-      if !test
-        self.wound
-      end      
+      FightRecord.addEvent( self, :pierce, nil )
+      FightRecord.addEvent( self, :armor_check, { :dice => @dice.clone, :tn => tn } )
+      if( HouseRule.include?(:richs_rule) && self.dice.sauron? )
+        self.armor.takeDamage
+        FightRecord.addEvent(self, :armor_damage, {:armor_left => self.armor.value} )
+      end
+      self.checkForWound tn
     else
       super
     end
@@ -57,7 +64,7 @@ class ShireHobbit < Hero
   def fromParams params
     result = super
     if( params.keys.include? "lucky" )
-      @armor.qualities.add :lucky
+      self.armor.addQuality :lucky
     end
     result
   end
@@ -67,7 +74,7 @@ class ShireHobbit < Hero
   def self.virtues 
     result = super
     result[:art_of_disappearing] = {:name => "Art of Disappearing", :implemented => false}
-    result[:brave_at_a_pinch] = {:name => "Brave at a Pinch", :implemented => false}
+    result[:brave_in_a_pinch] = {:name => "Brave in a Pinch", :implemented => true}
     result[:fair_shot] = {:name => "Fair Shot", :implemented => false}
     result[:tough_in_the_fibre] = {:name => "Tough in the Fibre", :implemented => false}
     result[:small_folk] = {:name => "Small Folk", :implemented => true, :tooltip => "Use Favoured Wits to compute Parry when fighting larger-than-hobbit-sized opponents."}
@@ -93,9 +100,26 @@ class ShireHobbit < Hero
     result
   end
   
+  def spendHope
+    if self.hasVirtue? :brave_in_a_pinch
+      puts "Brave in a a pinch TRIGGERED"
+      self.addCondition :brave_in_a_pinch
+    end
+    super
+  end
+  
   def wisdomCheck tn=14
     @dice.roll( @wisdom, self.weary?, 1)
     @dice.test tn
+  end
+  
+  def weary?
+    if self.hasCondition? :brave_in_a_pinch
+      puts "Brave in a pinch used"
+      return false
+    else
+      return super
+    end
   end
   
   

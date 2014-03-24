@@ -21,6 +21,21 @@ class Gear < Equipment
       @value = @undamaged_value
     end
   end
+  
+  def addQuality( symbol ) 
+    if [:cunning_make_armor, :cunning_make_shield, :cunning_make_helm ].include? symbol
+      self.addQUality :cunning_make
+      return
+    end
+    
+    super
+    case symbol
+    when :cunning_make
+      @encumbrance = [@encumbrance-2,0].max
+    end
+    true
+  end    
+  
 
   
   def value=(newValue)
@@ -40,7 +55,7 @@ class Gear < Equipment
   end
    
   def encumbrance
-    (@qualities.include? :cunning_make) ? [(@encumbrance-2),0].max : @encumbrance
+    @encumbrance
   end
   
   def initialize( name, value, encumbrance )
@@ -51,26 +66,25 @@ class Gear < Equipment
   # use this for cloning equipment
   def clone( newname = nil )
     result = self.class.new( (newname ? newname : @name), @value, @encumbrance )
-    result.qualities = @qualities.dup
-    result
-  end
-  
-  def encumbrance
-    val = super
-    if ( self.qualities.to_a & [:cunning_make_armor, :cunning_make_shield, :cunning_make_helm ] ).size > 0
-      return [val - 2, 0].max
+    @qualities.each do |q|
+      result.addQuality q
     end
-    return val
-  end
-  
-  
+    result
+  end  
 end
 
 class Protection < Gear
   
-  def value
-    @value
-  end
+  def addQuality( symbol ) 
+    super
+    case symbol
+    when :close_fitting
+    when :reinforced
+      @value += 1
+    end
+    true
+  end    
+  
   
   
   
@@ -121,9 +135,7 @@ class Shield < Gear
   
   
   def value
-    if (@qualities.include? :reinforced)
-      @value + 1
-    elsif is_broken 
+    if is_broken 
       0
     else
       super
@@ -138,10 +150,10 @@ class Shield < Gear
   end
   
   
-  def initialize( name, value, encumbrance )
-    super
-    @is_broken = false
-  end
+#  def initialize( name, value, encumbrance )
+#    super
+#    @is_broken = false
+#  end
 end
   
   

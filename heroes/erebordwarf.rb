@@ -18,8 +18,8 @@ class EreborDwarf < Hero
   end
   
   def hit opponent
-    if @dice.gandalf? && (@weapon.qualities.include? :azanulbizar)
-      opponent.conditions.add :weary
+    if @dice.gandalf? && (self.weapon.hasQuality? :azanulbizar)
+      opponent.addCondition :weary
     end
     super
   end
@@ -41,10 +41,13 @@ class EreborDwarf < Hero
     ] 
   end 
   
-  def totalFatigue
-    @cultural_blessing_enabled ? [super - (@heart + @f_heart), 0].max : super
+  def calcEncumbrance
+    super
+    if @cultural_blessing_enabled
+      @encumbrance = [@encumbrance - (@heart + @f_heart), 0].max
+    end
+    @encumbrance
   end
-  
    
    def self.enduranceBase
      28

@@ -30,7 +30,9 @@ class Weapon < Equipment
   # use this for cloning equipment
   def clone( newname=nil )
     w = Weapon.new( (newname ? newname : @name ), @damage, @edge, @injury, @encumbrance, @type, @called_shot_effect)
-    w.qualities = @qualities.dup
+    @qualities.each do |q|
+      w.addQuality q
+    end
     w
   end
   
@@ -38,8 +40,24 @@ class Weapon < Equipment
     [:grievous, :keen, :fell] # implemented by subclasses; list of all possible qualities
   end
   
+  def addQuality( symbol ) 
+    super
+    case symbol
+    when :grievous
+      @damage += 2
+    when :keen
+      @edge = [@edge-1,10].min
+    when :fell
+      @injury += 2
+    end
+  end  
   
-  def rollModifier
+  def type=(newTYpe)
+    @type = newType
+    @allows_shield = (@type == :one_handed) || (@type == :versatile)
+  end
+  
+  def protectionModifier
     if( @qualities.include? :dalish_longbow)
       return -1
     end
@@ -48,22 +66,12 @@ class Weapon < Equipment
   end
   
   def allows_shield?
-    (@type == :one_handed) || (@type == :versatile)
+    (@allows_shield ? @allows_shield : false) # default to false if @allows_shield not defined
   end
   
   def self.fist
     Weapon.new( "Unarmed", 1, 13, 0, 0, :unarmed, nil)
   end
   
-  def damage
-    (@qualities.include? :grievous) ? @damage + 2 : @damage
-  end
-  
-  def edge
-    (@qualities.include? :keen) ? [(@edge-1),10].min : @edge
-  end
-  
-  def injury
-    (@qualities.include? :fell) ? @injury + 2 : @injury
-  end
+
 end

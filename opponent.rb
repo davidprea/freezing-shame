@@ -6,15 +6,10 @@ require './fightrecord'
 class Opponent  
 
   attr_accessor :dice
-  attr_accessor :name, :endurance, :weapon_skill, :wounds
+  attr_accessor :name
   attr_accessor :size # 2 == Hobbit, 3 == Man
-  attr_accessor :armor, :shield, :helm
   attr_accessor :current_endurance
-  attr_accessor :weapon, :weapon_skill
-  attr_accessor :rweapon, :r_weapon_skill # ranged.  NYI
   #attr_accessor :weapon_name, :weapon_damage, :weapon_edge, :weapon_injury
-  attr_accessor :conditions # catch-all for temporary combat modifiers
-  attr_accessor :called_shot # will next attack be called shot?
   attr_accessor :token # used for adding events to FightRecord 
 
   
@@ -24,8 +19,7 @@ class Opponent
   
   def initialize
     @conditions = Set.new
-    @called_shot = false
-    @size = 3 # default size
+    @size = 2 # default size.  1 = hobbit or smaller, 2 = man(ish), 3 = larger
   end
   
   def addCondition symbol
@@ -33,7 +27,11 @@ class Opponent
   end
   
   def removeCondition symbol
-    #NYI
+    @conditions.delete symbol
+  end
+  
+  def hasCondition? symbol
+    @conditions.include? symbol
   end
   
   def weapons
@@ -59,17 +57,49 @@ class Opponent
     end
   end
   
+  # don't use this
   def weapon=(newWeapon)
-    if newWeapon.class == Weapon
-      @weapon = newWeapon
-    elsif newWeapon.class == Symbol
-      @weapon = self.class.gearForSymbol newWeapon, Weapon
-    else
-      puts "Error setting weapon: sent class " + newWeapon.class.to_s
-    end
-    @weapon
+    puts "Should not be assigning @weapon"
   end
   
+  def addWeapon weapon, skill, favoured=false
+    if !@weapons
+      @weapons = Array.new
+    end
+        
+    if weapon.class == Weapon
+      @weapons.push( :weapon => weapon, :skill => skill, :favoured => favoured )
+      return
+    end      
+    
+    if weapon.class == Symbol
+      self.addWeapon( self.class.gearForSymbol(weapon,nil), skill, favoured )
+      return
+    end
+  end
+  
+  def endurance
+    @endurance
+  end
+  
+  def weapon id=0
+    @weapons[id][:weapon]
+  end
+  
+  def weaponSkill weapon=0
+    if( weapon.is_a? Integer )
+      return @weapons[weapon][:skill]
+    elsif( weapon.is_a? Weapon )
+      return @weapons.select{|x| x[:weapon] == weapon}.first[:skill]
+    elsif( weapon.is_a? Symbol )
+      return @weapons.select{|x| x[:weapon] == self.class.gearForSymbol(weapon)}.first[:skill]
+    else
+      puts "#{self.class} passed a #{weapon.class} to method weaponSkill"
+      return nil
+    end
+  end
+  
+  #move armor, shield, helm into "@gear"
   
   def armor=(newArmor)
     if newArmor.kind_of? Armor
@@ -102,6 +132,10 @@ class Opponent
       puts "Error setting helm: sent class " + newArmor.class.to_s
     end
     @heml
+  end
+  
+  def encumbrance
+    0 # zero for monsters, overridden by heroes
   end
   
   def self.rewardGear gearList=nil
@@ -156,8 +190,12 @@ class Opponent
     @helm
   end
   
+  
   def parry opponent=nil
-    if HouseRule.include?(:avenues_rule) 
+    if self.hasCondition? :fumble
+      self.removeCondition :fumble
+      return 0
+    elsif HouseRule.include?(:avenues_rule) 
       return [self.armor.value - 2, 0].max
     elsif HouseRule.include?(:avenues_rule_modified)
       return [self.armor.value - 3, 0].max
@@ -166,10 +204,16 @@ class Opponent
     end
   end
   
+  def shieldValue
+    ((@shield && self.weapon.allows_shield?) ? self.shield.value : 0 )
+  end
+  
+  
+  
   def wound
     @wounds += 1
     if @token
-      FightRecord.addEvent( @token, self.name, :wound, @dice, self.wounds )
+      FightRecord.addEvent( self, :wound, { :dice => @dice.clone, :wounds => @wounds} )
     end
   end
     
@@ -188,11 +232,7 @@ class Opponent
   end
 
   def weary?
-    (@conditions.include? :weary)
-  end
-  
-  def weaponSkill
-    self.weapon_skill
+    (self.hasCondition? :weary)
   end
   
   def damageBonus
@@ -201,21 +241,6 @@ class Opponent
   
   def tn opponent
     0 #overridden by subclasss
-  end
-  
-  def rollProtectionAgainst opponent
-    tn = opponent.weaponInjury
-    mod = (opponent.dice.gandalf? && opponent.weapon.hasQuality?( :dalish ) ? -1 : 0 )
-    prot = self.protection opponent
-    self.dice.roll( prot[0], self.weary?, mod )
-    self.dice.bonus = prot[1]
-    FightRecord.addEvent( @token, self.name, :pierce, nil, nil )
-    FightRecord.addEvent( @token, self.name, :armor_check, @dice, tn )
-    if( HouseRule.include?(:richs_rule) && self.dice.sauron? )
-      self.armor.takeDamage
-      FightRecord.addEvent( @token, self.name, :armor_damage, nil, self.armor.value )
-    end
-    self.checkForWound tn
   end
   
   def checkForWound tn
@@ -251,6 +276,7 @@ class Opponent
   def intimidate
   end
   
+  #handle this when initializing?
   def weaponDamage 
     damage = self.weapon.damage
     if( self.weapon.type == :versatile && @shield.value == 0 )
@@ -259,6 +285,7 @@ class Opponent
     damage
   end
   
+  #handle this when initializing?
   def weaponInjury
     injury = self.weapon.injury
     if( self.weapon.type == :versatile && @shield.value == 0)
@@ -291,12 +318,11 @@ class Opponent
   
   def takeDamage opponent, amount
     @current_endurance -= amount
-    FightRecord.addEvent( @token, self.name, :damage, nil, amount )
+    FightRecord.addEvent( self, :damage, {:amount => amount, :health_left => @current_endurance } )
   end
     
   
   def rally
-
   end
   
   def tnFor opponent
@@ -313,35 +339,56 @@ class Opponent
   end
   
   def piercingBlow?
-    self.dice.feat > self.weapon.edge
+    self.dice.feat >= self.weapon.edge
   end
+  
+  
     
   def hit opponent
-    if( @called_shot )
-      FightRecord.addEvent( @token, self.name, :called_shot, nil, nil )
+    if( self.hasCondition? :called_shot )
+      self.removeCondition( :called_shot )
       if @dice.tengwars > 0
-        opponent.getHitBy self 
-        opponent.wound 
+        opponent.resistPierce self 
+      else
+        return #abort completely if no tengwars
       end
-      @called_shot = false
-    else
-      opponent.getHitBy self      
-    
-      if self.piercingBlow?
-        opponent.rollProtectionAgainst self 
-      end
+      #now call it again with @called_shot off to resolve normally and exit
+      return self.hit opponent
     end
+    
+    opponent.getHitBy self          
+    if self.piercingBlow?
+      opponent.resistPierce self 
+    end
+    
     self.post_hit opponent  # just in case there are post hit actions   
   end
+  
+  def resistPierce opponent
+    tn = opponent.weaponInjury
+    mod = (opponent.dice.gandalf? && opponent.weapon.hasQuality?( :dalish ) ? -1 : 0 )
+    prot = self.protection opponent
+    self.dice.roll( prot[0], self.weary?, mod )
+    self.dice.bonus = prot[1]
+    FightRecord.addEvent( self, :pierce, nil )
+    FightRecord.addEvent( self, :armor_check, {:dice => @dice.clone, :tn => tn } )
+    if( HouseRule.include?(:richs_rule) && self.dice.sauron? )
+      self.armor.takeDamage
+      FightRecord.addEvent(self, :armor_damage, {:armor_left => self.armor.value} )
+    end
+    self.checkForWound tn
+  end
+  
+  
   
   # if opponent is still alive will attack back
   def attack( opponent)
     
     # skip turn if disarmed
     [:disarmed, :knockback].each do | condition |
-      if @conditions.include? condition
-        @conditions.delete condition
-        FightRecord.addEvent( @token, self.name, :skip, nil, nil )
+      if self.hasCondition? condition
+        self.removeCondition condition
+        FightRecord.addEvent( self, :skip, nil )
         return
       end
     end
@@ -354,35 +401,34 @@ class Opponent
       return
     end
     
-    self.roll( self.weapon_skill )
+    self.roll( self.weaponSkill )
+        
+    tn = self.tnFor opponent
     
+    FightRecord.addEvent( self, :attack, {:dice => @dice.clone, :tn => tn, :called => self.hasCondition?(:called_shot) } )
+    
+    if( self.hit?(opponent) && opponent.hit_by?(self)) # give opponent one last chance to avoid...
+      self.hit opponent
+    elsif self.hasCondition? :called_shot
+      if self.dice.sauron?
+        self.addCondition :fumble
+        FightRecord.addEvent( self, :fumble, nil )
+      end
+      self.removeCondition :called_shot
+    end
+
     if( @dice.sauron? )
       opponent.attackerRolledSauron
     end
     
-    tn = self.tnFor opponent
-    
-    FightRecord.addEvent( @token, self.name, :attack, @dice.clone, tn )
-    
-    if( self.hit?(opponent) && opponent.hit_by?(self)) # give opponent one last chance to avoid...
-      self.hit opponent
-    end
-    
     if !opponent.alive?
-      FightRecord.addEvent( @token, opponent.name, :dies, nil )
+      FightRecord.addEvent( opponent, :dies, nil )
     end 
+    
   end
   
-  #deprecated  
-  def takeTurn opponent, nest=0 
-    self.attack( (opponent.is_a? Array) ? opponent.last : opponent )
-    
-    if( opponent.alive? )
-      opponent.takeTurn( self, nest+1 )
-    else
-      FightRecord.addEvent( @token, opponent.name, :dies, nil )
-    end
-  end
+  
+  
 end
 
 

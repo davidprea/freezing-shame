@@ -43,11 +43,11 @@ class FightRecord
     end
   end
   
-  def self.addEvent token, name, type, dice, value=nil
-    if token && (@@records.include? token)
-      record = @@records[token][:records].last
+  def self.addEvent actor, type, params=nil
+    if actor.token && (@@records.include? actor.token)
+      record = @@records[actor.token][:records].last
       if record
-        record.addEvent( name, type, dice, value )
+        record.addEvent( actor, type, params )
         return true
       end
     end
@@ -57,7 +57,7 @@ class FightRecord
   def lastDice
     i=1
     while(i <= @events.size)
-      d = @events[@events.size-i][:dice]
+      d = @events[@events.size-i][:params][:dice]
       if d
         return d
       end
@@ -72,29 +72,35 @@ class FightRecord
     results = {}
     array.each do |record|
       record.events.each do |event|
-        actor = event[:player]
-        h = results[actor]
-        if !h 
-          h = {:hits=>0, :weary=>0, :hope=> {}}
-          results[actor] = h
+        actor = event[:actor]
+        if !results[actor]
+          newEntry = {:hits=>0, :pierced=>0, :weary=>0, :hope=> {}}
+          results[actor] = newEntry
         end
+        result = results[actor]
         type = event[:type]
         
         if type == :attack
-          event[:dice].test( event[:value] )
-          h[:hits] +=  (event[:dice].test event[:value] ) ? 1 : 0
-          h[:weary] += event[:dice].weary ? 1 : 0  
+          event[:params][:dice].test( event[:params][:tn] )
+          result[:hits] +=  (event[:params][:dice].test event[:params][:tn] ) ? 1 : 0
+          result[:weary] += event[:params][:dice].weary ? 1 : 0  
         end
         
         if type == :hope
-          type = event[:value]
-          h = h[:hope]
+          type = event[:params][:type]
+          result = result[:hope]
         end
         
-        if !h[type]
-          h[type] = 1
+        if type == :armor_check
+          if !(event[:params][:dice].test event[:params][:tn])
+            result[:pierced] +=1
+          end
+        end
+        
+        if !result[type]
+          result[type] = 1
         else
-          h[type] += 1
+          result[type] += 1
         end
       end
     end
@@ -102,8 +108,8 @@ class FightRecord
   end
        
   
-  def addEvent( player, type, dice, value=0 )
-    h = { :player => player, :type => type, :dice => ( dice ? dice.clone : nil), :value => value }
+  def addEvent( actor, type, params )
+    h = { :actor => actor, :type => type, :params => params }
     @events.push h
   end
   
@@ -115,47 +121,58 @@ class FightRecord
         result += "--"
       end
       
+      name = event[:actor].name
+      
       case event[:type]
       when :attack  
-        result += event[:player] + " attacks and rolls " + event[:dice].to_s
+        if( event[:params][:called] )
+          result += "#{name} attempts a <b>called shot</b> and rolls #{event[:params][:dice]} (vs. #{event[:params][:tn]})"
+        else
+          result += "#{name} attacks and rolls #{event[:params][:dice]} (vs. #{event[:params][:tn]})"
+        end
       when :pierce 
         result += "Pierce!"
       when :hate
-        case event[:value]
+        case event[:params][:type]
         when :craven
-          result += event[:player] + " is <b><i>craven</i></b> and tries to flee!"
+          result += "#{name} is <b><i>craven</i></b> and tries to flee!"
         else
-          result += event[:player] + " uses its <b><i>" + event[:value].to_s + "</i></b>"
+          result += "#{name} uses its <b><i>#{event[:params][:type].to_s.gsub('_',' ').capitalize}</i></b>"
         end
       when :hope
-        case event[:value]
+        hope_left = event[:params][:hope_left]
+        case event[:params][:type]
         when :protection
-          result += event[:player] + " spends <b>Hope</b> to avoid a wound."
-        when :attack
-          result += event[:player] + " spends <b>Hope</b> to turn a miss into a hit."
+          result += "#{name} spends <b>Hope</b> to avoid a wound. (#{hope_left} left)"
+        when :tengwar
+          result += "#{name} spends <b>Hope</b> (#{hope_left} left) to turn a miss into a great or extraordinary success."
+        when :pierce
+          result += "#{name} spends <b>Hope</b> (#{hope_left} left) to turn a miss into a pierce."
         end
       when :disarmed
-        result += event[:player] + " is <b>disarmed</b>!"
+        result += "#{name} is <b>disarmed</b>!"
+      when :fumble
+        result += "#{name} fumbles the called shot. What a nub."
+      when :called_shot
+        result += "#{name} attempts a <b><i>Called Shot</i></b>!"
       when :knockback
-        result += "#{event[:player]} rolls with the blow for half damage."
+        result += "#{name} rolls with the blow for half damage."
       when :armor_damage
-        result += "#{event[:player]}'s armor gets damaged! (#{event[:value]} left)."
+        result += "#{name}'s armor gets damaged! (#{event[:params][:armor_left]} left)."
       when :skip
-        result += event[:player] + " misses a turn."
+        result += "#{name} misses a turn."
       when :out_of_hate
-        result += event[:player] + " --is out of Hate!"
+        result += "#{name} is out of Hate!"
       when :called_shot
         result += "Called Shot!"
       when :armor_check
-        result += event[:player] + " rolls armor: " + event[:dice].to_s + " vs. " + event[:value].to_s
+        result += "#{name} rolls armor: #{event[:params][:dice]} vs. #{event[:params][:tn]}"
       when :wound
-        result += event[:player] + " is <b>wounded</b> (" + event[:value].to_s + " total)"
+        result += "#{name} is <b>wounded</b> (#{event[:params][:wounds]} total)"
       when :dies
-        result += event[:player] + " dies."
+        result += "#{name} dies."
       when :damage
-        result += event[:player] + " <b>takes " + event[:value].to_s + " damage</b>."
-      when :health_remaining
-        result += event[:player] + " has<b> " + event[:value].to_s + " health left</b>."
+        result += "#{name} <b>takes #{event[:params][:amount]} damage</b> (#{event[:params][:health_left]} left)."
       else
         result += event.to_s + " not handled."
       end

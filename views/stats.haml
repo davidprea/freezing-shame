@@ -10,20 +10,21 @@
 		%th.stats{ :width=>50 } 
 			Pierces
 		%th.stats{ :width=>50 } 
-			Resist Pierce
+			Armor Checks
 		%th.stats{ :width=>50 }
-			Wounds/Fight
-	-stats.keys.sort.each do |key|
+			Wounds
+	-stats.keys.sort{|a,b| a.name <=> b.name }.each do |key|
 	-hits = stats[key][:hits]
 	-attacks = stats[key][:attack]
 	-weary = stats[key][:weary]
 	-pierces = stats[key][:pierce]
 	-prots = stats[key][:armor_check]
+	-fails = stats[key][:pierced]
 	-wounds = stats[key][:wound]
 	-deaths = stats[key][:dies]
 		%tr.stats
 			%td.stats
-				=key
+				=key.name
 			%td.stats{:align=>"center"}
 				=((iterations - deaths) * 100.0 / iterations).round(1).to_s + "%"
 			%td.stats{:align=>"center"}
@@ -33,19 +34,21 @@
 			%td.stats{:align=>"center"}
 				=(pierces * 100 / attacks).to_s + "%"
 			%td.stats{:align=>"center"}
-				=( prots > 0 ? (((prots - wounds) * 100 / prots).to_s + "%") : "N/A" )
+				="#{ prots > 0 ? ((prots - fails) * 100 / prots).round() : 0 }%"
 			%td.stats{:align=>"center"}
-				=( wounds * 1.0 / iterations ).round(2).to_s
+				="#{wounds}" # ( wounds * 1.0 / iterations ).round(2).to_s
 
 %p
 	Uses of Hope
 %p
+
+-herokey = stats.keys.select{ |x| x.kind_of? Hero }.first
 				
 %table.stats{ :padding => 4, :border => 1 }
-	-stats["Hero"][:hope].keys.each do | key |
+	-stats[herokey][:hope].keys.each do | key |
 		%tr
 			%td
-				=stats["Hero"][:hope][key].to_s
+				=stats[herokey][:hope][key].to_s
 			%td
 				=key 
 			
