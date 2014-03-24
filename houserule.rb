@@ -29,8 +29,8 @@ class HouseRule
         :tooltip => "Armor also increases Parry by 2 less than its armor rating (min 0). Heroes and Adversaries."
       },
       :avenues_rule_modified => {
-        :name => "Modified Avenue's Rule",
-        :tooltip => "Reduces by 3 (min 0) instead of 2."
+        :name => "Avenue's Rule, Modified",
+        :tooltip => "Protection minus 3 instead of 2."
       },
       :richs_rule => {
         :name => "Rich's Rule",
