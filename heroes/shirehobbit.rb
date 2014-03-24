@@ -74,7 +74,8 @@ class ShireHobbit < Hero
   def self.virtues 
     result = super
     result[:art_of_disappearing] = {:name => "Art of Disappearing", :implemented => false}
-    result[:brave_in_a_pinch] = {:name => "Brave in a Pinch", :implemented => true}
+    result[:brave_in_a_pinch] = {:name => "Brave in a Pinch", :implemented => true, :tooltip => 
+    "When you spend a point of Hope to invoke an Attribute bonus, you additionally cancel all penalties enforced from being Weary." }
     result[:fair_shot] = {:name => "Fair Shot", :implemented => false}
     result[:tough_in_the_fibre] = {:name => "Tough in the Fibre", :implemented => false}
     result[:small_folk] = {:name => "Small Folk", :implemented => true, :tooltip => "Use Favoured Wits to compute Parry when fighting larger-than-hobbit-sized opponents."}
