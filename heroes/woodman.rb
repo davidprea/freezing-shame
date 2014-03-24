@@ -12,6 +12,17 @@ class Woodman < Hero
     10
   end
   
+  def hit_by? opponent
+#    puts "Hit Check.  virtues: #{self.feats.to_a.join(', ')}"
+    if opponent.dice.gandalf? && self.hasVirtue?(:hound_of_mirkwood) && !self.hasCondition?( :hound_of_mirkwood_wounded )
+      self.addCondition( :hound_of_mirkwood_wounded )
+      FightRecord.addEvent( self, :hound_of_mirkwood, nil )
+      return false
+    end
+    super
+  end
+  
+  
   def self.culturalBlessing 
     {
       :name => "Woodcrafty", 
@@ -20,9 +31,17 @@ class Woodman < Hero
     } 
   end
   
-  def self.virtues #modifiers applied to self
-    super # + [:a_hunters_resolve, :herbal_remedies, :hound_of_mirkwood, :natural_watchfulness, :staunching_song ] 
+  def self.virtues 
+    result = super
+    result[:a_hunters_resolve] = {:name => "A Hunter's Resolve", :implemented => false, :tooltip => "Unimplemented"}
+    result[:herbal_remedies] = {:name => "Herbal Remedies", :implemented => false, :tooltip => 
+    "Unimplemented." }
+    result[:hound_of_mirkwood] = {:name => "Hound of Mirkwood", :implemented => true, :tooltip => "When you are engaged in battle, if an attack aimed at you produces a Eye of Sauron result, the blow hits and automatically wounds the hound instead (in place of the effects of a normal hit)."}
+    result[:natural_watchfulness] = {:name => "Natural Watchfulness", :implemented => false, :tooltip => "Unimplemented"}
+    result[:staunching_song] = {:name => "Staunching Song", :implemented => false, :tooltip => "Unimplemented"}
+    result
   end
+  
     
   def self.rewardGearData
     [

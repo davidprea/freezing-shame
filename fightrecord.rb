@@ -139,6 +139,8 @@ class FightRecord
         else
           result += "#{name} uses its <b><i>#{event[:params][:type].to_s.gsub('_',' ').capitalize}</i></b>"
         end
+      when :hound_of_mirkwood
+        result += "#{name}'s <b>Hound of Mirkwood</b> takes the wound for its master."
       when :hope
         hope_left = event[:params][:hope_left]
         case event[:params][:type]
