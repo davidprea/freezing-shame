@@ -302,7 +302,7 @@ class Monster < Opponent
   
   def tnFor opponent
     if opponent.kind_of? Hero
-      opponent.stance + (opponent.defenses self)
+      opponent.tn self
     else
       0 # ....not sure when this would happen....
     end
@@ -310,9 +310,9 @@ class Monster < Opponent
   
   def tn opponent 
     if opponent.kind_of? Hero
-      opponent.stance + self.parry
+      opponent.stance + self.defenses
     else
-      9 + self.parry # not sure when this would happen....
+      9 + self.defenses # not sure when this would happen....
     end
   end
   

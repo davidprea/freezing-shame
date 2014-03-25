@@ -217,7 +217,8 @@ class Opponent
   end
   
   def shieldValue
-    ((@shield && self.weapon.allows_shield?) ? self.shield.value : 0 )
+    puts "Shield: #{self.shield}, WAS: #{self.weapon.allows_shield?}, value: #{self.shield.value}"
+    ((self.shield && self.weapon.allows_shield?) ? self.shield.value : 0 )
   end
   
   

@@ -66,7 +66,7 @@ class Weapon < Equipment
   end
   
   def allows_shield?
-    (@allows_shield ? @allows_shield : false) # default to false if @allows_shield not defined
+    !(@type == :ranged || @type == :two_handed) # default to false if @allows_shield not defined
   end
   
   def self.fist
