@@ -155,6 +155,8 @@ class FightRecord
         end
       when :disarmed
         result += "#{name} is <b>disarmed</b>!"
+      when :smash
+        result += "#{name} <b>smashes</b> his opponent's shield!"
       when :fumble
         result += "#{name} fumbles the called shot. What a nub."
       when :called_shot

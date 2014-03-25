@@ -22,6 +22,19 @@ class Woodman < Hero
     super
   end
   
+  def hit opponent
+    super
+    if self.dice.gandalf? && self.weapon.hasQuality?(:bearded)
+      if opponent.shield.value > 0
+        opponent.shield.smash
+        FightRecord.addEvent( self, :smash, nil )
+      else
+        opponent.addCondition :disarmed
+        FightRecord.addEvent( opponent, :disarmed, nil )
+      end
+    end
+  end
+        
   
   def self.culturalBlessing 
     {

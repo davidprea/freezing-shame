@@ -127,6 +127,10 @@ class Shield < Gear
     end
     @is_broken
   end
+  
+  def smash
+    @is_broken = true
+  end
     
   
   def qualityList
