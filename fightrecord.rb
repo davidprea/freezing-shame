@@ -150,6 +150,8 @@ class FightRecord
           result += "#{name} spends <b>Hope</b> (#{hope_left} left) to turn a miss into a great or extraordinary success."
         when :pierce
           result += "#{name} spends <b>Hope</b> (#{hope_left} left) to turn a miss into a pierce."
+        when :hunters_resolve
+          result += "#{name} uses <b>A Hunter's Resolve</b> to restore endurance. #{hope_left} Hope remaining."
         end
       when :disarmed
         result += "#{name} is <b>disarmed</b>!"

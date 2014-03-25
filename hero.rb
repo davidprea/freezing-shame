@@ -312,6 +312,19 @@ class Hero < Opponent
   def f_wits
     @f_wits + (self.hasVirtue?(:gifted_wits) ? 1 : 0 )
   end
+  
+  def favoured_body
+    @body + self.f_body
+  end
+  
+  def favoured_heart
+    @heart + self.f_heart
+  end
+  
+  def favoured_wits
+    @wits + self.f_wits
+  end
+  
 
   def self.virtues 
     result = {}
@@ -436,18 +449,21 @@ class Hero < Opponent
     # now modify character or gear, when appropriate...
   end
   
-  def spendHope
+  def spendHope type
     @current_hope -= 1
+    FightRecord.addEvent( self, :hope, { :type => type, :hope_left => @current_hope })
   end
-  
-  def parry opponent=nil
-    if self.hasCondition? :fumble
-      return 0
-    elsif self.hasCondition? :bewildered
+    
+  def defenses opponent=nil
+    if self.hasCondition? :bewildered
       return 0
     else
-      return super + @wits + self.shieldValue + (@feats.include?(:thwarting) ? 1 : 0)
+      return super
     end
+  end
+    
+  def parry opponent=nil
+    @wits + (@feats.include?(:thwarting) ? 1 : 0)
   end
   
   
@@ -459,8 +475,7 @@ class Hero < Opponent
     test = @dice.test tn
     if !test && @current_hope > 0 && @wounds > 0
       if (tn - @dice.total) <= @body
-        self.spendHope
-        FightRecord.addEvent( self, :hope, {:type => :protection, :hope_left => @current_hope} )
+        self.spendHope :protection
         return 
       end
     end
@@ -473,30 +488,32 @@ class Hero < Opponent
     if !super && (@current_hope > 0)
       attribute_bonus = @body + ( @favoured_weapon ? self.f_body : 0 )
       if !@dice.sauron? && (self.tnFor(opponent) - @dice.total <= attribute_bonus && @dice.tengwars > 0 )
-        self.spendHope
-        FightRecord.addEvent( self, :hope, {:type => :tengwar, :hopeleft => @current_hope } )
+        self.spendHope :tengwar
         @dice.bonus += attribute_bonus # modify the dice and return super
       elsif !@dice.sauron? && (self.tnFor(opponent) - @dice.total <= attribute_bonus) && ( @dice.feat >= self.weapon.edge )
-        self.spendHope
-        FightRecord.addEvent( self, :hope, {:type => :pierce, :hope_left => @current_hope } )
+        self.spendHope :pierce
         @dice.bonus += attribute_bonus # modify the dice and return super
       end
     end     
     super   
   end
   
-  
-  def tn opponent  # this is TN to get hit
-    @stance + ((self.hasCondition? :bewildered) ? 0 : self.parry)
-  end
-  
+
   def alive?
     return super && @wounds < 2
   end
   
-  def tnFor opponent  # TN to hit
-    @stance + opponent.parry
+  # tn to hit opponent
+  def tnFor opponent
+    @stance + opponent.defenses(self)
   end
+  
+  # tn to get hit
+  def tn opponent
+    @stance + self.defenses(opponent)
+  end
+  
+  
   
   
   def weary?

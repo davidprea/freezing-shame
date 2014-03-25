@@ -33,7 +33,7 @@ class Woodman < Hero
   
   def self.virtues 
     result = super
-    result[:a_hunters_resolve] = {:name => "A Hunter's Resolve", :implemented => false, :tooltip => "Unimplemented"}
+    result[:a_hunters_resolve] = {:name => "A Hunter's Resolve", :implemented => true, :tooltip => "Spend a Hope point to recover a number of Endurance points equal to your favoured Heart rating (triggers on Weary)."}
     result[:herbal_remedies] = {:name => "Herbal Remedies", :implemented => false, :tooltip => 
     "Unimplemented." }
     result[:hound_of_mirkwood] = {:name => "Hound of Mirkwood", :implemented => true, :tooltip => "When you are engaged in battle, if an attack aimed at you produces a Eye of Sauron result, the blow hits and automatically wounds the hound instead (in place of the effects of a normal hit)."}
@@ -63,5 +63,17 @@ class Woodman < Hero
     result
   end
   
+  def takeDamage opponent, amount
+    super
+    if @current_endurance <= self.encumbrance && @current_hope > 0 && self.hasVirtue?(:a_hunters_resolve) && !self.hasCondition?(:used_hunters_resolve)
+      self.spendHope :hunters_resolve
+      self.addCondition( :used_hunters_resolve )
+      @current_endurance += self.favoured_heart
+    end
+  end
+      
+      
+      
+      
   
 end

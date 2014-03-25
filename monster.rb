@@ -288,15 +288,11 @@ class Monster < Opponent
   
   
   def parry opponent=nil
-    if self.hasCondition? :fumble
-      return 0
-    end
-    
     if !@parry
       @parry = 0
     end
-    
-    super + @parry + self.shieldValue
+       
+    @parry
   end
   
   def reset
@@ -306,7 +302,7 @@ class Monster < Opponent
   
   def tnFor opponent
     if opponent.kind_of? Hero
-      opponent.stance + (opponent.parry self)
+      opponent.stance + (opponent.defenses self)
     else
       0 # ....not sure when this would happen....
     end

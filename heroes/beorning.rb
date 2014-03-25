@@ -14,6 +14,16 @@ class Beorning < Hero
     #super + [:brothers_to_bears, :night_goer, :skin_coat, :great_strength, :twice_baked_honey_cakes ] 
   end
   
+  def self.virtues 
+    result = super
+    result[:brothers_to_bears] = {:name => "Brothers to Bears", :implemented => false, :tooltip => "Unimplemented"}
+    result[:night_goer] = {:name => "Night-goer", :implemented => false, :tooltip => "Unimplemented"}
+    result[:skin_coat] = {:name => "Skin-coat", :implemented => false, :tooltip => "Trade endurance for Protection bonus."}
+    result[:great_strength] = {:name => "Great Strength", :implemented => true, :tooltip => "If your Fatigue rating is equal to or less than 12 you receive a bonus of +3 to your Parry score."}
+    result[:twice_baked_honey_cakes] = {:name => "Twice-baked Honey Cakes", :implemented => false, :tooltip => "Unimplemented"}
+    result
+  end
+  
   def tnFor opponent  # TN to hit
     target = @stance + opponent.parry
     if( opponent.size > 2 && (@weapon.hasQuality? :giant_slaying))
@@ -21,6 +31,15 @@ class Beorning < Hero
     end
     target
   end
+  
+  def parry opponent=nil
+    if( self.encumbrance < 12 && self.hasVirtue?(:great_strength))
+       super + 3
+    else
+       super
+    end
+  end
+  
   
   def self.culturalBlessing
     {

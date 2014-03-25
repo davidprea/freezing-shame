@@ -191,17 +191,29 @@ class Opponent
   end
   
   
-  def parry opponent=nil
+  def defenses opponent=nil
     if self.hasCondition? :fumble
       self.removeCondition :fumble
       return 0
-    elsif HouseRule.include?(:avenues_rule) 
-      return [self.armor.value - 2, 0].max
-    elsif HouseRule.include?(:avenues_rule_modified)
-      return [self.armor.value - 3, 0].max
-    else
-      return 0
     end
+    
+    total = self.parry(opponent) + self.shieldValue + self.otherDefensiveBonus(opponent)
+    
+    if HouseRule.include?(:avenues_rule) 
+      total += [self.armor.value - 2, 0].max
+    elsif HouseRule.include?(:avenues_rule_modified)
+      total += [self.armor.value - 3, 0].max
+    end
+    
+    total
+  end
+  
+  def otherDefensiveBonus opponent=nil
+    0 # including this just in case
+  end
+  
+  def parry opponent=nil
+    0 # overridden by subclasses
   end
   
   def shieldValue

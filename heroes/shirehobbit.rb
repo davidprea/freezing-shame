@@ -31,16 +31,11 @@ class ShireHobbit < Hero
   end
   
   def parry opponent=nil
-      if self.hasCondition? :fumble
-      return 0
-    elsif self.hasCondition? :bewildered
-      return 0
-    end
-    p = super
     if(opponent && (opponent.size > 1) && (@feats.include? :small_folk))
-      return p + self.f_wits
+       super + self.f_wits
+    else
+       super
     end
-    p
   end
   
   def rollProtectionAgainst opponent
