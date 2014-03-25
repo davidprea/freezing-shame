@@ -35,7 +35,11 @@ class HouseRule
       :richs_rule => {
         :name => "Rich's Rule",
         :tooltip => "When a Sauron is rolled for a protection roll, your armor is damaged and has its value reduced by 1d (minimum zero)."
-      }
+      },
+      :vengers_rule => {
+        :name => "Venger's Rule",
+        :tooltip => "Adversaries only use Snake-like Speed against Great/Extraordinary Successes and against Pierce."
+      } 
 #      ,
 #      :elfcrushers_rule => {
 #        :name => "Elfcrusher's Rule",

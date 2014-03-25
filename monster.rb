@@ -268,7 +268,7 @@ class Monster < Opponent
     if( !opponent.dice.gandalf? && @abilities.keys.include?( :snake_like_speed ) && @current_hate > 0 )
       tn = opponent.tnFor self
       d = opponent.dice.total
-      if (d > tn) && ((d - tn) < (self.parry opponent))
+      if (d > tn) && ((d - tn) < (self.parry opponent)) && (HouseRule.include?(:vengers_rule) ? (opponent.dice.tengwars > 0 || opponent.dice.feat >= opponent.weapon.edge) : true )
         FightRecord.addEvent( self, :hate, {:type => :snake_like_speed })
         self.spendHate 
         return false
