@@ -24,10 +24,9 @@ class Gear < Equipment
   
   def addQuality( symbol ) 
     if [:cunning_make_armor, :cunning_make_shield, :cunning_make_helm ].include? symbol
-      self.addQUality :cunning_make
+      self.addQuality :cunning_make
       return
     end
-    
     super
     case symbol
     when :cunning_make
@@ -66,7 +65,7 @@ class Gear < Equipment
   # use this for cloning equipment
   def clone( newname = nil )
     result = self.class.new( (newname ? newname : @name), @value, @encumbrance )
-    @qualities.each do |q|
+    self.qualities.each do |q|
       result.addQuality q
     end
     result
@@ -79,7 +78,6 @@ class Protection < Gear
     super
     case symbol
     when :close_fitting
-    when :reinforced
       @value += 1
     end
     true
@@ -119,10 +117,19 @@ end
 
 class Shield < Gear
   
+  def addQuality( symbol ) 
+    super
+    case symbol
+    when :reinforced
+      @value += 1
+    end
+    true
+  end
+  
   attr_accessor :is_broken
   
   def is_broken=(newbroken)
-    if !(@qualities.include? :reinforced) || newbroken # if it's not reinforced, or new value is true
+    if !(self.qualities.include? :reinforced) || newbroken # if it's not reinforced, or new value is true
       @is_broken=(newbroken)
     end
     @is_broken
@@ -132,6 +139,9 @@ class Shield < Gear
     @is_broken = true
   end
     
+  def addParams params
+    super
+  end
   
   def qualityList
     [:cunning_make_shield, :reinforced] # implemented by subclasses; list of all possible qualities
@@ -139,7 +149,7 @@ class Shield < Gear
   
   
   def value
-    if is_broken 
+    if @is_broken 
       0
     else
       super

@@ -96,12 +96,12 @@ class ShireHobbit < Hero
     result
   end
   
-  def spendHope
+  def spendHope type
     if self.hasVirtue? :brave_in_a_pinch
       puts "Brave in a a pinch TRIGGERED"
       self.addCondition :brave_in_a_pinch
     end
-    super
+    super type
   end
   
   def wisdomCheck tn=14

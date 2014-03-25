@@ -9,7 +9,6 @@ class Equipment
   def initialize( name, encumbrance )
     @name = name
     @encumbrance = encumbrance
-    @qualities = Set.new # ahhhh....forget bit masks and just keep an array
   end
   
   # use this for cloning equipment
@@ -18,24 +17,36 @@ class Equipment
     self.to_s
   end
   
+  def qualities
+    if !@qualities
+      @qualities = Set.new
+    end
+    @qualities
+  end
+  
   def name2sym
     @name.gsub(/[^a-zA-Z\d\s-]/,"").gsub(/[-\s]/,'_').downcase.to_sym
   end
   
   def addParams params
+    if @name == "None"
+      return
+    end
+    
     params.keys.each do |key|
-      if (params[key] == "on") && (self.qualityList.include? key.to_sym)
-        self.addQuality key.to_sym
+      symbol = key.to_sym
+      if (self.qualityList.include? symbol)
+        self.addQuality symbol
       end
     end
   end
   
   def hasQuality? symbol
-    @qualities.include? symbol
+    self.qualities.include? symbol
   end
   
-  def addQuality( symbol ) 
-    @qualities.add symbol
+  def addQuality symbol  
+    self.qualities.add symbol
     # overrride in subclasses to modify stats
   end    
   

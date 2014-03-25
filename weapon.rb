@@ -24,13 +24,13 @@ class Weapon < Equipment
   end
   
   def to_s
-    @name + "( dmg: " + @damage.to_s + ", edge: " + @edge.to_s + ", inj: " + @injury.to_s + " )" + (@qualities.size > 0 ? (", q: " + @qualities.to_a.join(",")) : "" )
+    @name + "( dmg: " + @damage.to_s + ", edge: " + @edge.to_s + ", inj: " + @injury.to_s + " )" + (self.qualities.size > 0 ? (", q: " + self.qualities.to_a.join(",")) : "" )
   end
   
   # use this for cloning equipment
   def clone( newname=nil )
     w = Weapon.new( (newname ? newname : @name ), @damage, @edge, @injury, @encumbrance, @type, @called_shot_effect)
-    @qualities.each do |q|
+    self.qualities.each do |q|
       w.addQuality q
     end
     w
@@ -58,7 +58,7 @@ class Weapon < Equipment
   end
   
   def protectionModifier
-    if( @qualities.include? :dalish_longbow)
+    if( self.qualities.include? :dalish_longbow)
       return -1
     end
     0
