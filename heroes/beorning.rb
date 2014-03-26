@@ -26,7 +26,7 @@ class Beorning < Hero
   
   def tnFor opponent  # TN to hit
     target = @stance + opponent.parry
-    if( opponent.size > 2 && (@weapon.hasQuality? :giant_slaying))
+    if( opponent.size > 2 && (self.weapon.hasQuality? :giant_slaying))
       target -= 4
     end
     target
