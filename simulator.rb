@@ -7,7 +7,7 @@ Dir["./monsters/*"].each {|file| require file }
 Dir["./heroes/*"].each {|file| require file }
 require './houserule'
 
-
+set :port, 5454
 
 def deathmatch( hero, bunchOfMonsters, iterations )
   iterations.times do | i |
@@ -138,10 +138,11 @@ end
 
 get('/monsterstats') do
   if !params.include? 'monstertype'
-    partial( :monsterstats, :layout => false, :locals => { :stats => {}})
+    partial( :monsterstats, :layout => false, :locals => { :monster => nil})
   else
     monster = Monster.fromParams params
-    partial( :monsterstats, :layout => false, :locals => { :monsterclass => params["monsterclass"], :stats => monster.to_hash })
+    puts monster.weapons
+    partial( :monsterstats, :layout => false, :locals => { :monsterclass => params["monsterclass"], :monster => monster })
   end
 end
 

@@ -132,6 +132,8 @@ class FightRecord
         end
       when :pierce 
         result += "Pierce!"
+      when :seized
+        result += "#{name} has been <b>seized</b>!"
       when :hate
         case event[:params][:type]
         when :craven

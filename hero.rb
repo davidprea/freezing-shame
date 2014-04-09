@@ -457,6 +457,8 @@ class Hero < Opponent
   def defenses opponent=nil
     if self.hasCondition? :bewildered
       return 0
+    elsif self.hasCondition? :seized
+      return (super / 2.0).ceil
     else
       return super
     end

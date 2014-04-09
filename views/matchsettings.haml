@@ -26,6 +26,14 @@
 		-stances.size.times do |i|
 			%option{:value => 12-i*3 }
 				=stances[i]
+
+%fieldset
+	%legend Setting
+	-["Underground", "Forest", "Darkness", "Mirkwood"].each do | p |
+		%p
+			%input{ :type => "checkbox", :name => p.downcase.to_sym, :disabled => true }
+				%label{ :title => "Not yet implemented" }
+					=p
 				
 %fieldset
 	%legend Official Rules
@@ -39,6 +47,10 @@
 	%input{ :type => "checkbox", :name => "knockback_rule", :checked => false}
 		%label{ :title => "When hit by an Extraordinary Success, hero will take half damage but miss next turn."}
 			Use Knockback 
+	%p 
+	
+	%input{ :type => "checkbox", :name=> "favoured_skills", :checked => true }
+		%label{ :title => "Adversaries add their Attribute Level to all favoured skill checks."}
+			Adversary Favoured Skills RAW 
 
 		
-= partial :houserules, :layout => false

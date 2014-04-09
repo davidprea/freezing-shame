@@ -56,6 +56,13 @@
 							= partial :feats, :layout => false, :locals => { :culture => "Hero" }
 						
 					
+				#matchsettings
+					%fieldset
+						%legend General Settings
+						= partial :matchsettings, :layout => false
+						#submit_button{ :align => "center" }
+							= partial :submit_button, :layout => false, :locals => { :title => "Fight!" }
+
 							
 					
 				#monster		
@@ -72,20 +79,17 @@
 						%fieldset
 							%legend Stats
 							#monsterstats
-								= partial :monsterstats, :layout => false, :locals => { :monsterclass => "Monster", :stats => {} }
+								= partial :monsterstats, :layout => false, :locals => { :monsterclass => "Monster", :monster => nil }
 						%p
 							Number:
 							%select{ :name => 'monstercount' }
 								-10.times do |i|
 									%option{ :value => i + 1}
 										=(i + 1).to_s
-				#matchsettings
-					%fieldset
-						%legend General Settings
-						= partial :matchsettings, :layout => false
-						#submit_button{ :align => "center" }
-							= partial :submit_button, :layout => false, :locals => { :title => "Fight!" }
-
+										
+				= partial :houserules, :layout => false
+				
+				
 					
 			#output
 %script(src="/helpers.js")

@@ -11,9 +11,9 @@ class Monster < Opponent
   
   @@monsters = nil
   
-  attr_accessor :attribute_level, :parry, :hate, :abilities
+  attr_accessor :attribute_level, :parry, :hate, :abilities, :optional_abilities
   attr_accessor :current_hate
-  attr_accessor :sauron_rule, :unique
+  attr_accessor :sauron_rule, :unique, :favoured_skills_rule
     
   def initialize
     super
@@ -24,7 +24,7 @@ class Monster < Opponent
     @sauron_rule = false
     @hate = 0
     @current_weapon_index = 0
-    @special_abilities = 0 #bit mask
+    @optional_abilities = Hash.new
   end
   
   def self.abilities
@@ -34,7 +34,7 @@ class Monster < Opponent
       :great_size => { :name => "Great Size", :tooltip => "Requires two wounds, or one wound and zero endurance, to kill."},
       :hate_sunlight => { :name => "Hate Sunlight", :tooltip => "Unimplemented."},
       :savage_assault => { :name => "Savage Assault", :tooltip => "On great or extraordinary success, roll second attack with alternate weapon."},
-      :seize_victim => { :name => "Sieze Victim", :tooltip => "Unimplemented."},
+      :seize_victim => { :name => "Seize Victim", :tooltip => "Unimplemented."},
       :fear_of_fire => { :name => "Fear of Fire", :tooltip => "Unimplemented."},
       :thick_hide => { :name => "Thick Hide", :tooltip => "When making a Protection test, on great or extraordinary success attacker is disarmed."},
       :thing_of_terror => { :name => "Thing of Terror", :tooltip => "Unimplemented."},
@@ -59,6 +59,8 @@ class Monster < Opponent
     monsterClass = (Object.const_get(params[:monsterclass]));
     m = monsterClass.createType params[:monstertype]
     m.sauron_rule = params[:sauron_rule]
+    m.favoured_skills_rule = params[:favoured_skills] == "on"
+    
     m
   end
   
@@ -69,6 +71,10 @@ class Monster < Opponent
         @abilities.delete a
       end
     end
+  end
+  
+  def rollWeaponSkill
+    self.roll self.weaponSkill, ((self.weaponFavoured? && @favoured_skills_rule) ? self.attribute_level : 0)
   end
   
   def weaponDamage
@@ -103,6 +109,9 @@ class Monster < Opponent
     end
   end
   
+  def hasAbility? ability
+    @abilities.include?(ability) || @optional_abilities.include?(ability)
+  end
   
   def attackerRolledSauron
     if @sauron_rule
@@ -116,7 +125,7 @@ class Monster < Opponent
       "Endurance" => self.endurance,
       "Hate" => self.hate,
 #      "Unique" => self.unique.to_s,
-      "Weapon Skill" => self.weaponSkill,
+      "Weapon Skill" => "#{self.weaponSkill}#{(self.weaponFavoured? ? ' (favoured)' : '')}",
       "Weapon" => self.weapon.to_s,
 #      "Secondary Weapon" => ( @secondary_weapon ? @secondary_weapon.to_s : "None"),
       "Protection" => self.protection[0].to_s + "d +" + self.protection[1].to_s,
@@ -169,7 +178,7 @@ class Monster < Opponent
   def parseWeapons array
     @weapons = []
     array.each do | entry |
-      weapon = self.weapons[entry[:type]]
+      weapon = self.class.weapons[entry[:type]]
       if !weapon
         puts "Missing weapon '" + :type.to_s + "' for " + @name
       else
@@ -177,7 +186,7 @@ class Monster < Opponent
           weapon.damage = @attribute_level
         end
         skill = entry[:skill]
-        newentry = { :weapon => weapon, :skill => skill}
+        newentry = { :weapon => weapon, :skill => skill, :favoured => entry[:favoured] }
         @weapons.push newentry
       end
     end
@@ -191,7 +200,11 @@ class Monster < Opponent
     super @current_weapon_index
   end
   
-  def rollProtectionAgainst opponent
+  def weaponFavoured?
+    super @current_weapon_index
+  end
+  
+  def resistPierce opponent
     super
     if( @abilities.keys.include? :thick_hide ) && @dice.tengwars > 0
       opponent.addCondition :disarmed

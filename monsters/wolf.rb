@@ -26,7 +26,7 @@ class Wolf < Monster
       :shield => 0, 
       :weapons => 
         [
-          { :type=>:bite, :skill => 2}
+          { :type=>:bite, :skill => 2, :favoured=>true}
         ], 
       :abilities => [:great_leap, :seize_victim, :fear_of_fire] 
     }
@@ -43,7 +43,7 @@ class Wolf < Monster
       :weapons => 
         [
           { :type=>:bite, :skill => 3},
-          { :type=>:rend, :skill => 1}
+          { :type=>:rend, :skill => 1, :favoured=>true}
         ], 
       :abilities => [:savage_assault, :strike_fear, :fear_of_fire] 
     }
@@ -59,8 +59,8 @@ class Wolf < Monster
       :shield => 0, 
       :weapons => 
         [
-          { :type=>:bite, :skill => 3},
-          { :type=>:rend, :skill => 1}
+          { :type=>:bite, :skill => 3, :favoured=>true},
+          { :type=>:rend, :skill => 1, :favoured=>true}
         ], 
       :abilities => [:savage_assault, :strike_fear, :hideous_toughness] 
     }
@@ -77,8 +77,8 @@ class Wolf < Monster
       :shield => 0, 
       :weapons => 
         [
-          { :type=>:bite, :skill => 4},
-          { :type=>:rend, :skill => 1}
+          { :type=>:bite, :skill => 4, :favoured=>true},
+          { :type=>:rend, :skill => 1, :favoured=>true}
         ], 
       :abilities => [ :savage_assault, :thing_of_terror, :denizen_of_the_dark, :great_leap, :great_size ] 
     }

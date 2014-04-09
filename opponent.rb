@@ -35,7 +35,7 @@ class Opponent
   end
   
   def weapons
-    return self.class.weapons
+    @weapons
   end
   
   def self.weapons filter = nil
@@ -98,6 +98,11 @@ class Opponent
       return nil
     end
   end
+  
+  def weaponFavoured? id=0
+    @weapons[id][:favoured]
+  end
+  
   
   #move armor, shield, helm into "@gear"
   
@@ -274,8 +279,9 @@ class Opponent
     @dice
   end
   
-  def roll diceCount
+  def roll diceCount, bonus=0
     (self.dice).roll( diceCount, self.weary?, 0 )
+    self.dice.bonus = bonus
   end
   
   #special events
@@ -339,6 +345,10 @@ class Opponent
   
   def tnFor opponent
     0 # implemented by subclasses
+  end
+  
+  def rollWeaponSkill
+    self.roll self.weaponSkill
   end
   
   def hit? opponent
@@ -413,8 +423,8 @@ class Opponent
       return
     end
     
-    self.roll( self.weaponSkill )
-        
+    self.rollWeaponSkill
+
     tn = self.tnFor opponent
     
     FightRecord.addEvent( self, :attack, {:dice => @dice.clone, :tn => tn, :called => self.hasCondition?(:called_shot) } )

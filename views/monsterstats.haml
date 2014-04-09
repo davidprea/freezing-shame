@@ -1,19 +1,32 @@
--stats.keys.sort.each do | key |
+-if monster
+	%p 
+		="Attribute Level: #{monster.attribute_level}"
 	%p
-		-if key != "Special Abilities" && key != "Optional Abilities"
-			=key + ": " + stats[key].to_s
--if stats.include? "Special Abilities"
-	-m=(Object.const_get(monsterclass))
-	-stats["Special Abilities"].split(',').each do |s|
-		%p
-			%input{ :type => "checkbox", :name => s, :checked => true }
-				%label.monsterability{ :title => m.abilities[s.to_sym][:tooltip] }
-					=m.abilities[s.to_sym][:name]
-	-if stats["Optional Abilities"]
-		-stats["Optional Abilities"].split(',').each do |s|
+		="Hate: #{monster.hate}"
+	%p
+		="Armor: #{monster.protection[0]} +#{monster.protection[1]}"
+	%p
+		="Parry: #{monster.parry}"
+	%p
+		Weapons
+		-monster.weapons.size.times do |i|
+			-w = monster.weapons[i]
 			%p
-				%input{ :type => "checkbox", :name => s, :checked => false }
-					%label.monsterability{ :title => m.abilities[s.to_sym][:tooltip] }
-						=m.abilities[s.to_sym][:name]
-		
+				%input{ :type => "checkbox", :name => "weapon_#{i}", :checked => true }
+					%label{ :title => "#{w[:weapon]}"}
+						="#{w[:favoured] ? '<u>' : ''}#{w[:weapon].name}#{w[:favoured] ? '</u>' : ''}  Skill: #{w[:skill]}"
+
+	%p
+		Special Abilities
+		-monster.abilities.keys.each do |key|
+			%p
+				%input{ :type => "checkbox", :name => key, :checked => true }
+					%label{ :title => monster.abilities[key][:tooltip]}
+						=monster.abilities[key][:name]
+		-monster.optional_abilities.keys.each do |key|
+			%p
+				%input{ :type => "checkbox", :name => key, :checked => false }
+					%label{ :title => monster.optional_abilities[key][:tooltip]}
+						=monster.optional_abilities[key][:name]
+
 
