@@ -7,8 +7,6 @@ Dir["./monsters/*"].each {|file| require file }
 Dir["./heroes/*"].each {|file| require file }
 require './houserule'
 
-set :port, 5454
-
 def deathmatch( hero, bunchOfMonsters, iterations )
   iterations.times do | i |
     FightRecord.newFight hero.token
