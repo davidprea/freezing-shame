@@ -313,7 +313,11 @@ class Opponent
   end
   
   def extraSuccesses
-    @dice.tengwars
+    if( HouseRule.include?(:michebugios_rule) && (self.dice.tengwars > 1) )
+      [self.dice.tengwars - 1, 0].max
+    else
+      self.dice.tengwars
+    end
   end
   
   def computeDamage
@@ -361,7 +365,7 @@ class Opponent
   end
   
   def piercingBlow?
-    self.dice.feat >= self.weapon.edge
+    self.dice.feat >= self.weapon.edge || (HouseRule.include?(:michebugios_rule) && self.dice.tengwars > 1)
   end
   
   

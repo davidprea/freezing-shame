@@ -39,7 +39,11 @@ class HouseRule
       :vengers_rule => {
         :name => "Venger's Rule",
         :tooltip => "Adversaries only use Snake-like Speed against Great/Extraordinary Successes and against Pierce."
-      } 
+      },
+      :michebugios_rule => {
+        :name => "Michebugio's Rule",
+        :tooltip => "An attack that results in an Extraordinary Success becomes a Piercing blow (but only gets a single damage bonus)."
+      }
 #      ,
 #      :elfcrushers_rule => {
 #        :name => "Elfcrusher's Rule",
