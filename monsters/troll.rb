@@ -18,7 +18,7 @@ class Troll < Monster
   
   def self.types
     result = {}
-    result[:cave] = { :name => "Cave Troll", :attribute_level => 7, :size => 3, :endurance => 76, :hate => 8, :parry => 5, :armor => 3, :shield => 0, :weapons => [{ :type=>:bite,:skill => 3}, {:type=>:crush,:skill => 1,:favoured=>true}], :abilities => [:great_size, :hideous_toughness, :savage_assault, :thick_hide] }
+    result[:cave] = { :name => "Cave Troll", :attribute_level => 7, :size => 3, :endurance => 76, :hate => 8, :parry => 5, :armor => 3, :armour_favoured => true, :shield => 0, :weapons => [{ :type=>:bite,:skill => 3}, {:type=>:crush,:skill => 1,:favoured=>true}], :abilities => [:great_size, :hideous_toughness, :savage_assault, :thick_hide] }
     
     result[:hill] = { :name => "Hill Troll", :attribute_level => 7, :size => 3, :endurance => 84, :hate => 7, :parry => 5, :armor => 3, :shield => 1, :weapons => [{:type => :heavy_hammer, :skill => 3}, {:type=>:crush, :skill => 2}], :abilities => [:great_size, :hideous_toughness, :thick_hide] }
     

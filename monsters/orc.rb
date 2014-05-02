@@ -42,6 +42,7 @@ class Orc < Monster
       :parry => 4, 
       :shield => 2, 
       :armor => 2, 
+      :armor_favoured => true,
       :weapons => [
         { :type=>:spear,:skill => 3}, 
         {:type=>:bent_sword,:skill => 2 }], 
@@ -66,9 +67,9 @@ class Orc < Monster
       
       result[:chieftan] = { :name => "Orc Chieftan", :attribute_level => 5, :endurance => 20, :size => 2, :hate => 5, :parry => 4, :armor => 3, :shield => 3, :weapons => [{:type => :orc_axe, :skill => 3}], :abilities => [:hate_sunlight, :snake_like_speed, :horrible_strength, :commanding_voice],
     :optional_abilities => [:dwarf_hatred, :hobbit_hatred] }
-    result[:great] = { :name => "Great Orc", :attribute_level => 7, :endurance => 48, :size => 3, :hate => 8, :parry => 5, :armor => 4, :shield => 2, :weapons => [{:type => :heavy_scimitar, :skill => 3, :favoured => true }, {:type => :broad_headed_spear, :skill=>3}, {:type => :orc_axe, :skill=>2, :favoured => true }], :abilities => [:horrible_strength, :commanding_voice, :hideous_toughness, :great_size]}
+    result[:great] = { :name => "Great Orc", :attribute_level => 7, :endurance => 48, :size => 3, :hate => 8, :parry => 5, :armor => 4, :armor_favoured => true, :shield => 2, :weapons => [{:type => :heavy_scimitar, :skill => 3, :favoured => true }, {:type => :broad_headed_spear, :skill=>3}, {:type => :orc_axe, :skill=>2, :favoured => true }], :abilities => [:horrible_strength, :commanding_voice, :hideous_toughness, :great_size]}
     result[:snaga_tracker] = { :name => "Snaga Tracker", :attribute_level => 2, :size => 1, :endurance => 8, :hate => 2, :parry => 3, :armor => 2, :shield => 0, :weapons => [{ :type => :bow_of_horn, :skill => 2}, {:type => :jagged_knife,:skill => 2 }], :abilities => [:hate_sunlight, :snake_like_speed]}
-    result[:black_uruk] = { :name => "Black Uruk", :attribute_level => 5, :size => 2, :endurance => 20, :hate => 4, :parry => 5, :armor => 2, :shield => 2, :weapons => [{ :type=>:broad_bladed_sword,:skill => 2, :favoured => true }, {:type=>:broad_headed_spear,:skill => 2 }], :abilities => [:horrible_strength] }
+    result[:black_uruk] = { :name => "Black Uruk", :attribute_level => 5, :size => 2, :endurance => 20, :hate => 4, :parry => 5, :armor => 2, :armor_favoured => true, :shield => 2, :weapons => [{ :type=>:broad_bladed_sword,:skill => 2, :favoured => true }, {:type=>:broad_headed_spear,:skill => 2 }], :abilities => [:horrible_strength] }
     result[:messenger_of_lugburz] = { :name => "Messenger of Lugburz", :size => 2, :attribute_level => 4, :endurance => 18, :hate => 5, :parry => 4, :armor => 2, :weapons =>  [{:type=>:heavy_scimitar,:skill => 2}, {:type=>:jagged_knife,:skill => 3, :favoured => true}], :abilities => [:hate_sunlight, :snake_like_speed, :commanding_voice]}
 
 

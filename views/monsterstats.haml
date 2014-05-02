@@ -4,7 +4,7 @@
 	%p
 		="Hate: #{monster.hate}"
 	%p
-		="Armor: #{monster.protection[0]} +#{monster.protection[1]}"
+		="Armor: #{(monster.armor_favoured? ? '<u>' : '')}#{monster.protection[0]} +#{monster.protection[1]}#{(monster.armor_favoured? ? '</u>' : '')}"
 	%p
 		="Parry: #{monster.parry}"
 	%p

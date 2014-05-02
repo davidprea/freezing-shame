@@ -55,6 +55,10 @@ class Monster < Opponent
     }
   end
   
+  def armor_favoured?
+    @armor_favoured
+  end
+  
   def self.fromParams params
     monsterClass = (Object.const_get(params[:monsterclass]));
     m = monsterClass.createType params[:monstertype]
@@ -156,6 +160,7 @@ class Monster < Opponent
     @attribute_level = type[:attribute_level]
     @hate = type[:hate]
     @current_hate = @hate
+    @armor_favoured = type[:armor_favoured]
     if type.include? :unique
       @unique = type[:unique]
     end
@@ -305,7 +310,7 @@ class Monster < Opponent
       @parry = 0
     end
        
-    @parry
+    @parry + ( :armor_favoured ? @attribute_level : 0 )
   end
   
   def reset
