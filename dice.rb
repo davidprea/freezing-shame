@@ -79,8 +79,6 @@ class Dice
     
     if self.gandalf?
       returnString += "A"
-    elsif self.sauron?
-      returnString += "F"
     else
       returnString += self.total.to_s
     end
@@ -109,9 +107,7 @@ class Dice
   end
                 
   def test( tn )
-    if self.sauron?
-      return false
-    elsif self.gandalf? || (self.total >= tn)
+    if self.gandalf? || (self.total >= tn)
       return true
     else
       return false
