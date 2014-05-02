@@ -261,10 +261,11 @@ class Monster < Opponent
 
   
    def protection opponent=nil
+     bonus =  + (:armor_favoured ? @attribute_level : 0 )
      if opponent && (opponent.weapon.hasQuality? :splitting) && (opponent.dice.gandalf?)
-       [@armor.value-1,0]
+       [@armor.value-1,bonus]
      else
-       [@armor.value, 0]
+       [@armor.value, bonus]
      end
    end
       
@@ -310,7 +311,7 @@ class Monster < Opponent
       @parry = 0
     end
        
-    @parry + ( :armor_favoured ? @attribute_level : 0 )
+    @parry
   end
   
   def reset
