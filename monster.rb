@@ -261,7 +261,7 @@ class Monster < Opponent
 
   
    def protection opponent=nil
-     bonus =  + (:armor_favoured ? @attribute_level : 0 )
+     bonus =  + (@armor_favoured ? @attribute_level : 0 )
      if opponent && (opponent.weapon.hasQuality? :splitting) && (opponent.dice.gandalf?)
        [@armor.value-1,bonus]
      else
