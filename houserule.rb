@@ -43,6 +43,10 @@ class HouseRule
       :michebugios_rule => {
         :name => "Michebugio's Rule",
         :tooltip => "An attack that results in an Extraordinary Success becomes a Piercing blow (but only gets a single damage bonus)."
+      },
+      :yepesnopes_rule => {
+        :name => "Yepesnopes' Rule",
+        :tooltip => "Reduce all Edge ratings, for heros and monster, by 1."
       }
 #      ,
 #      :elfcrushers_rule => {

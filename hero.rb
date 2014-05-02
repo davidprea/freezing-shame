@@ -24,6 +24,7 @@ class Hero < Opponent
     @heart = 0
     @hope = 0
     @knockback_rule = false
+    @bite_kneecaps = false
     @cultural_blessing_enabled = true
     @f_heart = 0
     @f_wits = 0
@@ -63,6 +64,7 @@ class Hero < Opponent
     @heart = background[:heart]
     @wits = background[:wits]
     @knockback_rule = params.keys.include? "knockback_rule"
+    @bite_kneecaps = params.keys.include? "bite_kneecaps"
     @cultural_blessing_enabled = params[:cultural_blessing] == "on"
     @hope = params[:hope].to_i
     self.armor = params[:armor].to_sym
@@ -253,7 +255,7 @@ class Hero < Opponent
       return
     end
     
-    if @knockback_rule && opponent.dice.tengwars > 1
+    if @knockback_rule && opponent.dice.tengwars > 0
       self.addCondition :knockback
       FightRecord.addEvent( self, :knockback, nil )
       super opponent, (amount / 2)
@@ -262,6 +264,14 @@ class Hero < Opponent
       super
     end
   end
+  
+  def getHitBy opponent
+    super
+    if self.weary? && @bite_kneecaps
+      @stance = 6
+    end
+  end
+  
 
   
   def calculateEncumbrance

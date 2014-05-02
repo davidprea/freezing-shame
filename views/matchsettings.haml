@@ -44,13 +44,20 @@
 		
 	%p
 
-	%input{ :type => "checkbox", :name => "knockback_rule", :checked => false}
-		%label{ :title => "When hit by an Extraordinary Success, hero will take half damage but miss next turn."}
-			Use Knockback 
-	%p 
 	
 	%input{ :type => "checkbox", :name=> "favoured_skills", :checked => true }
 		%label{ :title => "Adversaries add their Attribute Level to all favoured skill checks."}
 			Adversary Favoured Skills RAW 
+			
+%fieldset
+	%legend Tactics
+	%input{ :type => "checkbox", :name => "knockback_rule", :checked => false}
+		%label{ :title => "When hit by a Great or Extraordinary Success, hero will take half damage but miss next turn."}
+			Use Knockback 
+	%p 
+	%input{ :type => "checkbox", :name => "bite_kneecaps", :checked => false}
+		%label{ :title => "When Hero is Weary, switch to Forward stance."}
+			"Bite Their Kneecaps Off" 
+	
 
 		

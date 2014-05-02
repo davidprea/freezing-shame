@@ -23,6 +23,14 @@ class Weapon < Equipment
     @called_shot_effect = called_shot_effect
   end
   
+  def edge
+    if (HouseRule.include? :yepesnopes_rule)
+      [@edge-1,10].min
+    else
+      @edge
+    end
+  end
+  
   def to_s
     @name + "( dmg: " + @damage.to_s + ", edge: " + @edge.to_s + ", inj: " + @injury.to_s + " )" + (self.qualities.size > 0 ? (", q: " + self.qualities.to_a.join(",")) : "" )
   end
