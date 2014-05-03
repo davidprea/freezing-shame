@@ -47,6 +47,14 @@ class HouseRule
       :yepesnopes_rule => {
         :name => "Yepesnopes' Rule",
         :tooltip => "Reduce all Edge ratings, for heros and monster, by 1."
+      },
+      :tomfish_rule => {
+        :name => "Tomfish's Rule",
+        :tooltip => "When Wounded, roll Feat die twice and take lower result."
+      },
+      :evenings_rule => {
+        :name => "Evening's Rule",
+        :tooltip => "Roll protection on every non-pierce. Reduce damage by 1 for each tengwar, +1 for mail, 0 on Eye. Knocked back on total failure."
       }
 #      ,
 #      :elfcrushers_rule => {

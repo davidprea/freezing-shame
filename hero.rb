@@ -251,18 +251,31 @@ class Hero < Opponent
   
   def takeDamage opponent, amount
     if HouseRule.include? :angelalexs_rule
+      amount = [amount - self.protection[0], 0].max;
       super opponent, [amount - self.protection[0], 0].max
-      return
     end
     
     if @knockback_rule && opponent.dice.tengwars > 0
       self.addCondition :knockback
       FightRecord.addEvent( self, :knockback, nil )
-      super opponent, (amount / 2)
-      return
-    else
-      super
+      amount = amount /2
     end
+    
+    if self.protection[0] > 0 && HouseRule.include?(:evenings_rule)
+      if opponent.dice.feat < opponent.weapon.edge
+        self.rollProtection opponent, 0
+        if self.dice.tengwars > 0
+          absorb = self.dice.tengwars + ( self.protection[0] > 2 ? 1 : 0 )
+          FightRecord.addEvent( self, :absorb, { :absorbed => absorb })
+          amount -= absorb
+        elsif dice.sauron?
+          FightRecord.addEvent( self, :knockback, nil )
+          self.addCondition :knockback
+        end
+      end 
+    end
+    
+    super opponent, amount
   end
   
   def getHitBy opponent

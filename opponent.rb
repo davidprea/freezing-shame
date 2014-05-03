@@ -279,8 +279,8 @@ class Opponent
     @dice
   end
   
-  def roll diceCount, bonus=0
-    (self.dice).roll( diceCount, self.weary?, 0 )
+  def roll diceCount, bonus=0, feat_modifier=0
+    (self.dice).roll( diceCount, self.weary?, feat_modifier )
     self.dice.bonus = bonus
   end
   
@@ -351,8 +351,16 @@ class Opponent
     0 # implemented by subclasses
   end
   
+  def attackRollFeatModifier
+    if HouseRule.include?(:tomfish_rule) && (@wounds > 0)
+      return -1
+    else
+      return 0
+    end
+  end
+  
   def rollWeaponSkill
-    self.roll self.weaponSkill
+    self.roll self.weaponSkill, 0, self.attackRollFeatModifier
   end
   
   def hit? opponent
@@ -390,14 +398,18 @@ class Opponent
     self.post_hit opponent  # just in case there are post hit actions   
   end
   
-  def resistPierce opponent
-    tn = opponent.weaponInjury
+  def rollProtection opponent, tn
     mod = (opponent.dice.gandalf? && opponent.weapon.hasQuality?( :dalish ) ? -1 : 0 )
     prot = self.protection opponent
     self.dice.roll( prot[0], self.weary?, mod )
     self.dice.bonus = prot[1]
-    FightRecord.addEvent( self, :pierce, nil )
     FightRecord.addEvent( self, :armor_check, {:dice => @dice.clone, :tn => tn } )
+  end
+  
+  def resistPierce opponent
+    tn = opponent.weaponInjury
+    FightRecord.addEvent( self, :pierce, nil )
+    self.rollProtection opponent, tn
     if( HouseRule.include?(:richs_rule) && self.dice.sauron? )
       self.armor.takeDamage
       FightRecord.addEvent(self, :armor_damage, {:armor_left => self.armor.value} )

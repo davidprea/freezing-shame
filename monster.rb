@@ -78,7 +78,7 @@ class Monster < Opponent
   end
   
   def rollWeaponSkill
-    self.roll self.weaponSkill, ((self.weaponFavoured? && @favoured_skills_rule) ? self.attribute_level : 0)
+    self.roll self.weaponSkill, ((self.weaponFavoured? && @favoured_skills_rule) ? self.attribute_level : 0), self.attackRollFeatModifier
   end
   
   def weaponDamage

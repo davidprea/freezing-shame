@@ -74,7 +74,7 @@ class FightRecord
       record.events.each do |event|
         actor = event[:actor]
         if !results[actor]
-          newEntry = {:hits=>0, :pierced=>0, :weary=>0, :hope=> {}}
+          newEntry = {:hits=>0, :pierced=>0, :weary=>0, :dies=>0, :hope=> {}}
           results[actor] = newEntry
         end
         result = results[actor]
@@ -143,6 +143,8 @@ class FightRecord
         end
       when :hound_of_mirkwood
         result += "#{name}'s <b>Hound of Mirkwood</b> takes the wound for its master."
+      when :absorb
+        result += "#{name} uses his armor to absorb #{event[:params][:absorbed]} damage."
       when :hope
         hope_left = event[:params][:hope_left]
         case event[:params][:type]
