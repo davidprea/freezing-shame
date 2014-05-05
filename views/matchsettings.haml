@@ -48,6 +48,13 @@
 	%input{ :type => "checkbox", :name=> "favoured_skills", :checked => true }
 		%label{ :title => "Adversaries add their Attribute Level to all favoured skill checks."}
 			Adversary Favoured Skills RAW 
+	%p
+			
+	%label Travel Fatigue:
+	%select{ :name => 'extra_fatigue' }
+		-11.times do |i|
+			%option{ :value => i }
+				="#{i}"
 			
 %fieldset
 	%legend Tactics

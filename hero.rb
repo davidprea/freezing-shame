@@ -23,6 +23,7 @@ class Hero < Opponent
     @wits = 0
     @heart = 0
     @hope = 0
+    @base_fatigue = 0
     @knockback_rule = false
     @bite_kneecaps = false
     @cultural_blessing_enabled = true
@@ -64,6 +65,7 @@ class Hero < Opponent
     @heart = background[:heart]
     @wits = background[:wits]
     @knockback_rule = params.keys.include? "knockback_rule"
+    @base_fatigue = params[:extra_fatigue].to_i
     @bite_kneecaps = params.keys.include? "bite_kneecaps"
     @cultural_blessing_enabled = params[:cultural_blessing] == "on"
     @hope = params[:hope].to_i
@@ -142,7 +144,7 @@ class Hero < Opponent
   end
   
   def calcEncumbrance
-    @encumbrance = self.armor.encumbrance + self.helm.encumbrance + self.shield.encumbrance + self.weapon.encumbrance
+    @encumbrance = @base_fatigue + self.armor.encumbrance + self.helm.encumbrance + self.shield.encumbrance + self.weapon.encumbrance
     @encumbrance
   end
   
