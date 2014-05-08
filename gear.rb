@@ -90,6 +90,9 @@ end
 
 class Armor < Protection
   
+  def encumbrance
+    return ( HouseRule.include?(:elfcrushers_rule) ? 0 : @encumbrance )
+  end
   
   def qualityList
     [:cunning_make_armor, :close_fitting_armor] 

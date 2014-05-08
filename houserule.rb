@@ -55,12 +55,11 @@ class HouseRule
       :evenings_rule => {
         :name => "Evening's Rule",
         :tooltip => "Roll protection on every non-pierce. Reduce damage by 1 for each tengwar, +1 for mail, 0 on Eye. Knocked back on total failure."
+      }     ,
+      :elfcrushers_rule => {
+        :name => "Elfcrusher's Rule",
+        :tooltip => "Armor encumbrance only accrues while traveling (use Travel Fatigue to simulate values > 0.)"
       }
-#      ,
-#      :elfcrushers_rule => {
-#        :name => "Elfcrusher's Rule",
-#        :tooltip => "A new skill, Armor, is added. It costs XP, not AP, and each rank reduces armor encumbrance by 2 (min 0)."
-#      }
       
     }
   end
