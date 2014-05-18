@@ -2,13 +2,6 @@
 %script(src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js")
 %script( src="//code.jquery.com/ui/1.10.4/jquery-ui.js" )
 
-//%script(src="//code.jquery.com/jquery-latest.min.js")
-//%script(src="/jquery-2.1.-.min.js")
-// wwww%script(src="/right.js")
-//%script(src="/jquery-2.1.-.min.js")
-// %script(src="/ajax_stuff.js")
-// %script(src="/nhpup_1.1.js")
-
 
 %html
 	%head
@@ -16,10 +9,11 @@
 		%link(rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css")
 		%link(rel="stylesheet" href="css/styles.css")
 		
-	%body
+	%body{ :onload => 'initializePage()' }
 		#wrapper
 			#header
-				%h1 Elfcrusher's Middle Earth Death Match
+				%h1 
+					Elfcrusher's middle earth death matcH
 				%h4 
 					%a{ :href => "https://docs.google.com/document/d/131wp5Shbt4EQYmX3ofbRyj7zO5SJ8sL2K047fjzgZaU/edit" }
 						Release Notes
@@ -27,71 +21,29 @@
 			#content
 
 			%form#masterform{ :action => '/masterform', :method => "Post"}
-						
-				#hero
-					%fieldset
-						%legend
-							Hero
-						%div.cultureandbackground
-							%label
-								Culture:
-							#cultures
-								= partial :cultures, :layout => false, :locals => { :culture => "None"}		
-							Background:
-							#backgrounds
-								= partial :backgrounds, :layout => false, :locals => { :culture => "None", :background => "None"}
-						#attributes
-							= partial :attributes, :layout=>false,:locals => {:attributes =>{:body=>0,:heart=>0,:wits=>0}}
-						
-						#cultural_blessing
-							= partial :cultural_blessing, :layout=>false, :locals => {:culture => "Hero" }
-							
-						#skills
-							= partial :skills, :layout => false
-							
-						#gear		
-							= partial :gear, :layout => "false", :locals => { :culture => "Hero" }
-							
-						#feats
-							= partial :feats, :layout => false, :locals => { :culture => "Hero" }
-						
-					
-				#matchsettings
-					%fieldset
-						%legend General Settings
-						= partial :matchsettings, :layout => false
-						#submit_button{ :align => "center" }
-							= partial :submit_button, :layout => false, :locals => { :title => "Fight!" }
 
-							
-					
-				#monster		
-					%fieldset
-						%legend Opponent
-						%p 
-							Family:
-							#monsterclass
-								= partial :monsterclass, :layout => false
-						%p 
-							Type:
-							#monstertype
-								= partial :monstertype, :layout => false, :locals => { :monsterclass => "None" }
-						%fieldset
-							%legend Stats
-							#monsterstats
-								= partial :monsterstats, :layout => false, :locals => { :monsterclass => "Monster", :monster => nil }
-						%p
-							Number:
-							%select{ :name => 'monstercount' }
-								-10.times do |i|
-									%option{ :value => i + 1}
-										=(i + 1).to_s
-										
-				= partial :houserules, :layout => false
+				#hero	
+					-[["Hero Basics",:hero_basics],["Skills", :skills],["Virtues",:virtues],["Rewards", :rewards],["Gear", :gear],["Stance", :stance],["Hope",:hope]].each do | pair |
+						%h3.accordion-heading{ :id => "#{pair[1].downcase}_header" }
+							=pair[0]
+							%span.accordion-subheading{ :id => "#{pair[1].downcase}_subheader" }
+						%div.accordion-div{ :id => pair[1].to_s, :class => 'left-panel settings-panel' }
+							= partial pair[1], :layout => false, :locals => { :culture => "Hero" }
+
+				#settings
+					-[["Monster", :monster],["Iterations", :iterations],["Setting", :setting],["Official Rules", :rules],["House Rules", :houserules],["Tactics", :tactics]].each do | pair |
+						%h3.accordion-heading{ :id => "#{pair[1].downcase}_header" }
+							=pair[0]
+							%span.accordion-subheading{ :id => "#{pair[1].downcase}_subheader" }
+						%div.accordion-div{ :id => pair[1].to_s, :class => 'right-panel settings-panel' }
+							= partial pair[1], :layout => false, :locals => { :culture => "Hero" }
 				
-				
-					
-			#output
+				#reporting	
+					#submit_button				
+						= partial :submit_button, :layout => false, :locals => {:title => "Fight!" }
+					#output
+
+
 %script(src="/helpers.js")
 
 			

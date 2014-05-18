@@ -1,0 +1,5 @@
+%select{ :id => "stance", :name => "stance"}
+	-stances = ["Defensive","Open","Forward"]
+	-stances.size.times do |i|
+		%option{:value => 12-i*3 }
+			=stances[i]

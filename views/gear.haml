@@ -1,10 +1,8 @@
-%fieldset
-	%legend Gear
-	#weapon
-		= partial :geartype, :layout => "false", :locals => { :culture=> culture, :type => "Weapon", :reward => "None" }					
-	#armor
-		= partial :geartype, :layout => "false", :locals => { :culture=> culture, :type => "Armor", :reward => "None" }					
-	#shield
-		= partial :geartype, :layout => "false", :locals => { :culture=> culture, :type => "Shield", :reward => "None" }					
-	#helm
-		= partial :geartype, :layout => "false", :locals => { :culture=> culture, :type => "Helm", :reward => "None" }					
+#weapon
+	= partial :geartype, :layout => "false", :locals => { :culture=> culture, :type => "Weapon", :reward => "None" }					
+#armor
+	= partial :geartype, :layout => "false", :locals => { :culture=> culture, :type => "Armor", :reward => "None" }					
+#shield
+	= partial :geartype, :layout => "false", :locals => { :culture=> culture, :type => "Shield", :reward => "None" }					
+#helm
+	= partial :geartype, :layout => "false", :locals => { :culture=> culture, :type => "Helm", :reward => "None" }					

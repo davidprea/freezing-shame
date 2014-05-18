@@ -1,3 +1,47 @@
+@font-face { 
+	font-family: 'libra';
+	src: url('/fonts/libra-normal.ttf');
+}
+
+@font-face { 
+	font-family: 'ringbearer';
+	src: url('/fonts/ringbearer.ttf');
+}
+
+@font-face { 
+	font-family: 'alois';
+	src: url('/fonts/alois.ttf');
+}
+
+@font-face { 
+	font-family: 'aloisbold';
+	src: url('/fonts/alois-bold.ttf');
+}
+
+
+#hero,
+#settings {
+	display:inline-block;
+	width:350px;
+}
+
+#hero {
+	float:left;
+	margin-right:20px;
+}
+
+.tooltip {
+	cursor:pointer;
+}
+
+#settings {
+	float:right;
+}
+
+#reporting {
+	margin:0 auto;
+}
+
 #wrapper{
 	width:80%
 	margin:auto;
@@ -14,24 +58,35 @@
 	width:100%;
 }
 
-fieldset{
-	border:1px solid #999;
-	padding:5px;
-	margin:5px;
-}
-
 select{
 	float:center;
 }
 
 body{
 	margin:20px;
+	font-family: 'alois';
+	background:url('/images/parchment.jpg') repeat;
+	color:saddlebrown;
 }
 
-#matchsettings, #monster {
-	float:left;
-	width: 30%;
+label{
+	color:saddlebrown;
 }
+
+fieldset {
+	margin:3px auto;
+	color:saddlebrown;
+	border-color:saddlebrown;
+}
+
+p {
+	color:saddlebrown;
+}
+
+div {
+	color:saddlebrown;
+}
+
 
 .cultureandbackground, #attributes {
 	float:left;
@@ -41,13 +96,14 @@ body{
 
 
 #header{
-	background-color:#ade;
+	font-family:'ringbearer';
+	font-size:40;
 	text-align:center;
 }
 
 
 label.monsterability {
-	font-family: sans-serif;
+	font-family: 'alois';
 	font-size: 10px;
 }
 
@@ -62,7 +118,7 @@ p {  margin-top: 0em; margin-bottom: 0em; }
 .ui-tooltip {
   color: black;
   border-radius: 5px;
-  font: 12px "Helvetica Neue", Sans-Serif;
+  font: 12px 'alois', 'alois';
   box-shadow: 0 0 4px black;
   background: white;
   border: 1px solid gray;
@@ -71,12 +127,13 @@ p {  margin-top: 0em; margin-bottom: 0em; }
 
 
 #output {
-	font-family: sans-serif;
+	font-family: 'alois';
 	font-size: 14px;
 	position:relative;
-	float:right;
-	width:60%;
+	width:100%;
 	height:auto;
+	padding:10px;
+	margin-left:20px;
 }
 
 table.stats {
@@ -91,19 +148,113 @@ td.stats {
 }
 
 #hero{
-	margin:12px 0;
-	width:40%;
-	float:left;
-	background-color:#ddd;
-	padding:20px;
+}
+
+.gear_select {
 }
 
 
 #submit_button {
-	font-family:sans-serif;
-	font-style:bold;
-	font-size:20px;
+	width:300px;
+	margin-left: auto;
+	margin-right: auto;
+	border:1px solid;
+	border-color:saddlebrown;
+	outline:none;
+	background:rgba(0,0,0,0.05);
+	border-radius:5px;
+	font-family:'alois';
+	font-size:24px;
 }
+
+
+
+.accordion-heading {
+	font-family:'alois';
+	font-size:20px;
+	background:rgba(1,1,1,0.1);
+	outline:none;
+	cursor:pointer;
+	height:36px;
+	line-height:1;
+	color:saddlebrown;
+}
+
+.accordion-subheading {
+	font-family:'alois';
+	font-size: 12px;
+	color:saddlebrown;
+}
+
+.accordion-div {
+	background:transparent;
+	font-family:'alois';
+}
+
+select {
+	font-size:10;
+}
+	
+input.fancy[type=checkbox] {
+	opacity:0;
+	position:absolute;
+	height:14px;
+	width:13px;
+	vertical-align:middle;
+	cursor:pointer;
+}
+
+input.fancy[type=checkbox] + label
+ {
+     background: url(/images/skill_check.png) no-repeat;
+     height: 14px;
+     width: 13px;
+     display:inline-block;
+     padding: 0 0 0 0px;
+	 vertical-align:middle;
+ }
+
+input.fancy[type=checkbox]:checked + label
+ {
+    background: url(/images/skill_check_on.png) no-repeat;
+    height: 14px;
+    width: 13px;
+    display:inline-block;
+    padding: 0 0 0 0px;
+	vertical-align:middle;
+ }
+
+
+input.fancy[type=radio] {
+	opacity:0;
+	position:absolute;
+	height:14px;
+	width:13px;
+	vertical-align:middle;
+	cursor:pointer;
+}
+
+input.fancy[type=radio] + label
+ {
+     background: url(/images/skill_check.png) no-repeat;
+     height: 14px;
+     width: 13px;
+     display:inline-block;
+     padding: 0 0 0 0px;
+	 vertical-align:middle;
+ }
+
+input.fancy[type=radio]:checked + label
+ {
+    background: url(/images/skill_check_on.png) no-repeat;
+    height: 14px;
+    width: 13px;
+    display:inline-block;
+    padding: 0 0 0 0px;
+	vertical-align:middle;
+ }
+
+
 
 
 

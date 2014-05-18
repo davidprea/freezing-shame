@@ -1,8 +1,12 @@
-%table#feats
-	%body
-		-heroclass 
-		-.each do | v |
-			%tr
-				%td
-					%input(type="checkbox" class="checkbox" value="#{v}")
-				%td= v
+-heroclass=(Object.const_get(culture))
+					
+- virtues = heroclass.virtues
+- virtues.keys.each do | v |
+	%p
+	%input.fancy{:type=>"checkbox", :name=>v, :id => v, :disabled => !virtues[v][:implemented], :title => virtues[v][:tooltip] }
+	%label
+	%label{ :for => v, :title => virtues[v][:tooltip] }
+		= virtues[v][:name] 
+
+
+

@@ -83,6 +83,8 @@ get '/submit_button' do
     title = '"Release the Hounds!"'
   end
   
+  puts title;
+  
   partial :submit_button, :layout => false, :locals => { :title => title }
 end
 

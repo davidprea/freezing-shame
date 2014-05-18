@@ -1,3 +1,48 @@
+$(function() {
+	$( "#hero" ).accordion({
+		heightStyle: "content",
+		autoHeight: false,
+		clearStyle: true,   
+	});
+});
+
+$(function() {
+	$( "#settings" ).accordion({
+		heightStyle: "content",
+		autoHeight: false,
+		clearStyle: true,   
+	});
+});
+
+function setHeaderSubtext( header_name, value ) {
+	document.getElementById( header_name + "_subheader").innerHTML = value;
+}
+
+function changeSkill(element) {
+	var values = element.id.split('_');
+	var name = values[0];
+	var rank = parseInt( values[2] );
+	for(var i=1;i<=6;i++) {
+		var n = "#" + name + "_skill_" + i;
+		$(n).each( function (index) {
+			this.checked = (this.value <= rank);
+		})
+	}
+	
+}
+
+
+
+function initializePage() {
+	document.getElementById("monster_header").style.color = "red";
+	document.getElementById("hero_basics_header").style.color = "red";
+	setHeaderSubtext( "gear", "Dagger" );
+	setHeaderSubtext( "stance", "Defensive" );
+	setHeaderSubtext( "iterations", "1" );
+	setHeaderSubtext( "virtues", "None" );
+	setHeaderSubtext( "rewards", "None" );
+	setHeaderSubtext( "skills", "None" );
+}
 
 $("#masterform").submit(function( event ) {
 	event.preventDefault();
@@ -16,14 +61,29 @@ $(function() {
 function setMonsterFamily(select) {
 	updateFormElement( select, 'monstertype' );
 	updateFormElement( select, 'monsterstats' );
+	document.getElementById("monster_header").style.color = "red";
+	document.getElementById("monster_subheader").innerHTML = "";
+}
+
+function setMonsterType(select) {
+	updateFormElement( select, 'monsterstats' );
+	var name = select.options[select.selectedIndex].getAttribute("name");
+//	$( "#monster_subheader" ).innerHTML = name;
+	document.getElementById("monster_subheader").innerHTML = "(" + name + ")";
+	document.getElementById("monster_header").style.color = "black";
 }
 
 function setCulture(select) {
+	
 	updateFormElement(select, 'backgrounds');
 	updateFormElement(select, 'feats');
 	updateFormElement(select, 'gear');
 	updateFormElement(select, 'submit_button')
 	updateFormElement(select, 'cultural_blessing')
+	document.getElementById("hero_basics_header").style.color = "red";
+	setHeaderSubtext("hero_basics", select.options[select.selectedIndex].getAttribute("name")); 
+	document.getElementById("cultural_blessing").style.display = "block";
+	
 }
 
 function updateRewards(reward) {
@@ -109,8 +169,10 @@ function runSimulation( form ){
 };
 
 function setBackground( select ) {
-	updateFormElement( select.options[select.selectedIndex], 'attributes' );
-//	updateFormElement( select, 'feats')
+	var option = select.options[select.selectedIndex];
+	updateFormElement( option, 'attributes' );
+	document.getElementById("hero_basics_header").style.color = "black";
+	setHeaderSubtext( "hero_basics", option.getAttribute("culture") + " \"" + option.getAttribute("background") + "\"" )
 };
 
 function updateFormElement( source, destString ) {
@@ -125,6 +187,20 @@ function getMonsterTypes() {
 		$( '#monstertypes' ).html(data);	
 	});
 };
+
+function updateGear() {
+	var string = "";
+	['weapon','armor','shield','helm'].forEach( function(type) {
+		var selector = document.getElementById( type + "_selector" )
+		var optionname = selector.options[selector.selectedIndex].getAttribute("name");
+		if( optionname != "None") {
+			string += optionname + "|"
+		}
+	});
+	// chop off last "|"
+	string = string.substring(0, string.length - 1);
+	setHeaderSubtext( "gear", string );
+}
 
 /*
 function myfunction() {
@@ -146,6 +222,7 @@ get '/ajax/test.html' d0
 	render :formname, :layout => false, 
 
 */
+
 
 function updateFavouredValues(){
 	var attributes = ['body','heart','wits'];

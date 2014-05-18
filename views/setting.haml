@@ -1,0 +1,6 @@
+-["Underground", "Forest", "Darkness", "Mirkwood"].each do | p |
+	%p
+		%input.fancy{ :type => "checkbox", :id => p.downcase.to_sym, :disabled => true }
+		%label
+		%label{ :for => p.downcase.to_sym, :title => "Not yet implemented" }
+			=p

@@ -1,0 +1,12 @@
+%div
+	Culture:
+	#cultures
+		= partial :cultures, :layout => false, :locals => { :culture => "None"}		
+	#cultural_blessing{ :style => "display: none" }
+		= partial :cultural_blessing, :layout => false, :locals => { :culture => "Hero" }
+	Background:
+	#backgrounds
+		= partial :backgrounds, :layout => false, :locals => { :culture => "None", :background => "None"}
+	%p
+	#attributes
+		= partial :attributes, :layout => false, :locals => { :attributes => {:body=>0,:heart=>0,:wits=>0}}

@@ -1,18 +1,15 @@
-%fieldset.attributes
-	%legend 
-		Attributes
+%fieldset
 	%table
-		%body
-			%tr
-				%td.attr
-				%td.attr
-				%td.attr
-				%td.attr
-					+3
-				%td.attr
-					+2
-				%td.attr
-					+1
+		%tr
+			%td.attr
+			%td.attr
+			%td.attr
+			%td.attr
+				+3
+			%td.attr
+				+2
+			%td.attr
+				+1
 			-attributes.keys.each do | attr |
 				%tr
 					%td
@@ -23,4 +20,5 @@
 						( 0 )
 					-[3,2,1].each do |i|
 						%td.attr
-							%input{ :type => "radio", :id => "#{attr.to_s + "_" + i.to_s}", :name => ("favoured_attribute_" + i.to_s), :value => "#{attr}", :onchange => 'updateFavoured(this)' }
+							%input.fancy{ :type => "radio", :id => "#{attr.to_s + "_" + i.to_s}", :name => ("favoured_attribute_" + i.to_s), :value => "#{attr}", :onchange => 'updateFavoured(this)' }
+							%label

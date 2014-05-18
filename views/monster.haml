@@ -1,0 +1,18 @@
+%p 
+	Family:
+	#monsterclass
+		= partial :monsterclass, :layout => false
+%p 
+	Type:
+	#monstertype
+		= partial :monstertype, :layout => false, :locals => { :monsterclass => "None" }
+%fieldset
+	%legend Stats
+	#monsterstats
+		= partial :monsterstats, :layout => false, :locals => { :monsterclass => "Monster", :monster => nil }
+%p
+	Number:
+	%select{ :name => 'monstercount' }
+		-10.times do |i|
+			%option{ :value => i + 1}
+				=(i + 1).to_s

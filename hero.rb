@@ -172,7 +172,7 @@ class Hero < Opponent
       @@gear[:mail_shirt] = Armor.new("Mail shirt", 3, 12)
       @@gear[:coat_of_mail] = Armor.new("Coat of mail", 4, 16)
       @@gear[:mail_hauberk] = Armor.new("Mail hauberk", 5, 20)
-      @@gear[:cap] = Helm.new("Cap of iron and leather", 1, 2)
+      @@gear[:cap] = Helm.new("Cap", 1, 2)
       @@gear[:helm] = Helm.new("Helm", 4, 6)
       @@gear[:buckler] = Shield.new("Buckler", 1, 1)
       @@gear[:shield] = Shield.new("Shield", 2, 2)

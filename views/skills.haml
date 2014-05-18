@@ -1,20 +1,20 @@
-%fieldset
-	%legend Skills
-	%table#skill_table
-		%body
+%table#skill_table
+	%body
+		%tr
+			%td Skill
+			-6.times do |i|
+				%td
+					=(i+1).to_s
+		-["Weapon","Battle"].each do | s |
 			%tr
-				%td Skill
-				-6.times do |i|
+				%td
+					=s
+				- 6.times do |i|
 					%td
-						=(i+1).to_s
-			-["Weapon","Battle"].each do | s |
-				%tr
-					%td
-						=s
-					- 6.times do |i|
-						%td
-							%input{:type=>"radio", :value=> i+1, :name=> ("#{s.downcase}_skill")}
-					%td
-						%input{:type=>"checkbox", :disabled => s == "Battle", :name => ("#{s.downcase}_favoured" ), :value=>false}
-					%td
-						Favoured
+						%input.fancy{:id => "#{s.downcase}_skill_#{i+1}", :type=>"checkbox", :onchange => 'changeSkill(this)', :value=> i+1, :name=> ("#{s.downcase}_skill")}
+						%label
+				%td
+					%input.fancy{:type=>"checkbox", :disabled => s == "Battle", :name => ("#{s.downcase}_favoured" ), :value=>false}
+					%label
+				%td
+					Favoured

@@ -1,0 +1,19 @@
+				
+%input.fancy{ :id => "sauron_rule", :type => "checkbox", :name => "sauron_rule", :checked => true}
+%label
+%label{ :for => "sauron_rule", :title => "When Hero rolls a Sauron, opponent will try a called shot."}
+	"Called Shot on Sauron" Rule
+	
+%p
+
+
+%input.fancy{ :id => "favoured_skills", :type => "checkbox", :name=> "favoured_skills", :checked => true }
+%label
+%label{ :for => "favoured_skills", :title => "Adversaries add their Attribute Level to all favoured skill checks."}
+	Adversary Favoured Skills RAW 
+%p
+%label Travel Fatigue:
+%select{ :name => 'extra_fatigue' }
+	-8.times do |i|
+		%option{ :value => 4*i }
+			="#{4*i}"

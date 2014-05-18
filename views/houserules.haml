@@ -1,9 +1,8 @@
-%fieldset
-	%legend House Rules
-	-rules=HouseRule.rules
-	-rules.keys.each do | key |
-		%p
-			%input{ :type => "checkbox", :title => rules[key][:tooltip], :name => key }
-				%label{ :title => rules[key][:tooltip] }
-					=rules[key][:name]
+-rules=HouseRule.rules
+-rules.keys.each do | key |
+	%p
+		%input.fancy{ :id => key, :type => "checkbox", :title => rules[key][:tooltip], :name => key }
+		%label
+		%label.tooltip{ :for => key, :title => rules[key][:tooltip] }
+			=rules[key][:name]
 	

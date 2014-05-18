@@ -5,6 +5,6 @@
 		-backgrounds=(Object.const_get(culture)).backgrounds
 		-backgrounds.keys.each do |key|
 		-b = backgrounds[key]
-			%option{ :value => "#{key}", :culture => "#{culture}", :body => "#{b[:body]}", :heart => "#{b[:heart]}", :wits => "#{b[:wits]}"}
+			%option{ :value => "#{key}", :background => b[:name], :culture => "#{culture}", :body => "#{b[:body]}", :heart => "#{b[:heart]}", :wits => "#{b[:wits]}"}
 				= b[:name] 
 
