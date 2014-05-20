@@ -1,10 +1,12 @@
--if culture != "None"
-	%select#background{ :name => "background", :culture => "#{culture}", :onchange => 'setBackground(this)' }
-		%option{ :value => "None" }
-			Choose a Background...
-		-backgrounds=(Object.const_get(culture)).backgrounds
-		-backgrounds.keys.each do |key|
-		-b = backgrounds[key]
-			%option{ :value => "#{key}", :background => b[:name], :culture => "#{culture}", :body => "#{b[:body]}", :heart => "#{b[:heart]}", :wits => "#{b[:wits]}"}
-				= b[:name] 
+-if culture != "Hero"
+	Background:
+	%div.styled-select
+		%select#background{ :name => "background", :culture => "#{culture}", :onchange => 'setBackground(this)' }
+			%option{ :value => "None" }
+				Choose a Background...
+			-backgrounds=(Object.const_get(culture)).backgrounds
+			-backgrounds.keys.each do |key|
+			-b = backgrounds[key]
+				%option{ :value => "#{key}", :culture => "#{culture}", :body => "#{b[:body]}", :heart => "#{b[:heart]}", :wits => "#{b[:wits]}"}
+					= b[:name] 
 

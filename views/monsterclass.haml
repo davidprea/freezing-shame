@@ -1,7 +1,8 @@
-%select{ :name => "monsterclass", :onchange => "setMonsterFamily( this )" }
-	%option{ :value => "None" }
-		Choose a Category...
-	-Monster.monsters.each do |m|
-		%option{ :value => m.name.to_sym }
-			= m.name
+%div.styled-select
+	%select{ :name => "monsterclass", :onchange => "setMonsterFamily( this )" }
+		%option{ :value => "None" }
+			Choose a Category...
+		-Monster.monsters.each do |m|
+			%option{ :value => m.name.to_sym }
+				= m.name
 

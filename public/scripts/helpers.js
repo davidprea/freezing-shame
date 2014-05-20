@@ -1,7 +1,7 @@
 $(function() {
 	$( "#hero" ).accordion({
 		heightStyle: "content",
-		autoHeight: false,
+		autoHeight: true,
 		clearStyle: true,   
 	});
 });
@@ -9,7 +9,7 @@ $(function() {
 $(function() {
 	$( "#settings" ).accordion({
 		heightStyle: "content",
-		autoHeight: false,
+		autoHeight: true,
 		clearStyle: true,   
 	});
 });
@@ -73,17 +73,15 @@ function setMonsterType(select) {
 	document.getElementById("monster_header").style.color = "black";
 }
 
-function setCulture(select) {
-	
-	updateFormElement(select, 'backgrounds');
-	updateFormElement(select, 'feats');
-	updateFormElement(select, 'gear');
-	updateFormElement(select, 'submit_button')
-	updateFormElement(select, 'cultural_blessing')
+function setCulture(item) {
+	updateFormElement(item, 'backgrounds');
+	updateFormElement(item, 'feats');
+	updateFormElement(item, 'gear');
+	updateFormElement(item, 'submit_button')
+	updateFormElement(item, 'cultural_blessing')
 	document.getElementById("hero_basics_header").style.color = "red";
-	setHeaderSubtext("hero_basics", select.options[select.selectedIndex].getAttribute("name")); 
-	document.getElementById("cultural_blessing").style.display = "block";
-	
+	setHeaderSubtext("hero_basics", value ); 
+	document.getElementById("cultural_blessing").style.display = "block";	
 }
 
 function updateRewards(reward) {
@@ -181,6 +179,13 @@ function updateFormElement( source, destString ) {
 		$( '#' + destString ).html(data);
 	});
 };
+
+function updateFormElement2( argString, pathString ) {
+	var path = "/" + pathString;
+	$.get( path, argString, function( data ) {
+		$( '#' + pathString ).html(data);
+	});
+}
 
 function getMonsterTypes() {
 	$.post( "/monstertypes", $('#sethero').serialize(), function( data ) {

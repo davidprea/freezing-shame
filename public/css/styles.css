@@ -1,3 +1,5 @@
+
+
 @font-face { 
 	font-family: 'libra';
 	src: url('/fonts/libra-normal.ttf');
@@ -18,34 +20,67 @@
 	src: url('/fonts/alois-bold.ttf');
 }
 
-
-#hero,
-#settings {
-	display:inline-block;
-	width:350px;
+* {
+	font-family: 'alois';
+	color:saddlebrown;
 }
 
-#hero {
-	float:left;
-	margin-right:20px;
+body {
+	background:url('/images/parchment.jpg') repeat;
+	min-width:975px;
 }
+
+h1 {
+	font-size:48px;
+	font-family:'ringbearer';
+}
+
+#wrapper {
+	margin:20px;
+}
+
+
+#column-wrapper {
+	padding-left: 325px;   /* LC width */
+	padding-right: 325px;  /* RC width */
+}
+
+#column-wrapper .column {
+  position: relative;
+  float: left;
+}
+
+#hero-wrapper {
+  width: 325px;          /* LC width */
+  right: 325px;          /* LC width */
+  margin-left: -100%;
+}
+
+#settings-wrapper {
+	width:325px;
+	margin-right:-325px;
+}
+
+
+#reporting {
+	width:100%;
+}
+
+#column_header {
+	width:auto;
+	text-align:center;
+	font-family:'ringbearer';
+	font-size:28px;
+	background:transparent;
+	margin-bottom:25px;
+}
+
 
 .tooltip {
 	cursor:pointer;
 }
 
-#settings {
-	float:right;
-}
 
-#reporting {
-	margin:0 auto;
-}
-
-#wrapper{
-	width:80%
-	margin:auto;
-}
 
 * {
   -webkit-box-sizing: border-box;
@@ -62,29 +97,12 @@ select{
 	float:center;
 }
 
-body{
-	margin:20px;
-	font-family: 'alois';
-	background:url('/images/parchment.jpg') repeat;
-	color:saddlebrown;
-}
 
-label{
-	color:saddlebrown;
-}
+
 
 fieldset {
 	margin:3px auto;
-	color:saddlebrown;
 	border-color:saddlebrown;
-}
-
-p {
-	color:saddlebrown;
-}
-
-div {
-	color:saddlebrown;
 }
 
 
@@ -103,7 +121,6 @@ div {
 
 
 label.monsterability {
-	font-family: 'alois';
 	font-size: 10px;
 }
 
@@ -127,7 +144,6 @@ p {  margin-top: 0em; margin-bottom: 0em; }
 
 
 #output {
-	font-family: 'alois';
 	font-size: 14px;
 	position:relative;
 	width:100%;
@@ -147,8 +163,6 @@ td.stats {
 	text-align:center;
 }
 
-#hero{
-}
 
 .gear_select {
 }
@@ -163,14 +177,11 @@ td.stats {
 	outline:none;
 	background:rgba(0,0,0,0.05);
 	border-radius:5px;
-	font-family:'alois';
 	font-size:24px;
 }
 
 
-
 .accordion-heading {
-	font-family:'alois';
 	font-size:20px;
 	background:rgba(1,1,1,0.1);
 	outline:none;
@@ -181,14 +192,21 @@ td.stats {
 }
 
 .accordion-subheading {
-	font-family:'alois';
 	font-size: 12px;
+}
+
+.styled-select select {
+	width:100%;
+	font-family: 'alois';
+	background:rgba(1,1,1,0.05);
 	color:saddlebrown;
+	border-color:saddlebrown;
 }
 
 .accordion-div {
 	background:transparent;
-	font-family:'alois';
+	overflow:visible;
+	z-index:-1;
 }
 
 select {
@@ -253,6 +271,31 @@ input.fancy[type=radio]:checked + label
     padding: 0 0 0 0px;
 	vertical-align:middle;
  }
+
+input.underline[type=checkbox] {
+  opacity:0;
+  position:absolute;
+  vertical-align:middle;
+width:80px;
+cursor:pointer;
+}
+
+input.underline[type=checkbox] + label
+ {
+     display:inline-block;
+     padding: 0 0 0 0px;
+	 vertical-align:middle;
+ }
+
+input.underline[type=checkbox]:checked + label
+ {
+    display:inline-block;
+    padding: 0 0 0 0px;
+	vertical-align:middle;
+	text-decoration:underline;
+ }
+
+
 
 
 

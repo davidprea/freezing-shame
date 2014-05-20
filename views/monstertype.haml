@@ -1,10 +1,11 @@
 -if monsterclass != "None"
-	%select#monstertype{ :name => "monstertype", :monsterclass => monsterclass, :onchange => "setMonsterType( this, 'monsterstats')" }
-		%option{ :value => "None" }
-			Choose a Type...
-		-types=(Object.const_get(monsterclass)).types
-		-types.keys.each do |key|
-			%option{ :value => key, :name => types[key][:name] }
-				= types[key][:name]
+	%div.styled-select
+		%select#monstertype{ :name => "monstertype", :monsterclass => monsterclass, :onchange => "setMonsterType( this, 'monsterstats')" }
+			%option{ :value => "None" }
+				Choose a Type...
+			-types=(Object.const_get(monsterclass)).types
+			-types.keys.each do |key|
+				%option{ :value => key, :name => types[key][:name] }
+					= types[key][:name]
 		
 		

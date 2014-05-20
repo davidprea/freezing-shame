@@ -10,6 +10,7 @@
 		%link(rel="stylesheet" href="css/styles.css")
 		
 	%body{ :onload => 'initializePage()' }
+		
 		#wrapper
 			#header
 				%h1 
@@ -20,31 +21,42 @@
 			
 			#content
 
-			%form#masterform{ :action => '/masterform', :method => "Post"}
-
-				#hero	
-					-[["Hero Basics",:hero_basics],["Skills", :skills],["Virtues",:virtues],["Rewards", :rewards],["Gear", :gear],["Stance", :stance],["Hope",:hope]].each do | pair |
-						%h3.accordion-heading{ :id => "#{pair[1].downcase}_header" }
-							=pair[0]
-							%span.accordion-subheading{ :id => "#{pair[1].downcase}_subheader" }
-						%div.accordion-div{ :id => pair[1].to_s, :class => 'left-panel settings-panel' }
-							= partial pair[1], :layout => false, :locals => { :culture => "Hero" }
-
-				#settings
-					-[["Monster", :monster],["Iterations", :iterations],["Setting", :setting],["Official Rules", :rules],["House Rules", :houserules],["Tactics", :tactics]].each do | pair |
-						%h3.accordion-heading{ :id => "#{pair[1].downcase}_header" }
-							=pair[0]
-							%span.accordion-subheading{ :id => "#{pair[1].downcase}_subheader" }
-						%div.accordion-div{ :id => pair[1].to_s, :class => 'right-panel settings-panel' }
-							= partial pair[1], :layout => false, :locals => { :culture => "Hero" }
-				
-				#reporting	
-					#submit_button				
-						= partial :submit_button, :layout => false, :locals => {:title => "Fight!" }
-					#output
+				%form#masterform{ :action => '/masterform', :method => "Post"}
 
 
-%script(src="/helpers.js")
+					#column-wrapper
+						#reporting.column	
+							#submit_button				
+								= partial :submit_button, :layout => false, :locals => {:title => "Fight!" }
+							#output
+
+						#hero-wrapper.column
+							#column_header
+								HerO
+							#hero	
+								-[["Basics",:hero_basics],["Skills", :skills],["Virtues",:virtues],["Rewards", :rewards],["Gear", :gear],["Stance", :stance],["Hope",:hope]].each do | pair |
+									%h3.accordion-heading{ :id => "#{pair[1].downcase}_header" }
+										=pair[0]
+										%span.accordion-subheading{ :id => "#{pair[1].downcase}_subheader" }
+									%div.accordion-div{ :id => pair[1].to_s, :class => 'left-panel settings-panel' }
+										= partial pair[1], :layout => false, :locals => { :culture => "Hero" }
+									
+
+						#settings-wrapper.column
+							#column_header
+								SettingS
+			
+							#settings
+								-[["Opponent", :monster],["Iterations", :iterations],["Setting", :setting],["Official Rules", :rules],["House Rules", :houserules],["Tactics", :tactics]].each do | pair |
+									%h3.accordion-heading{ :id => "#{pair[1].downcase}_header" }
+										=pair[0]
+										%span.accordion-subheading{ :id => "#{pair[1].downcase}_subheader" }
+									%div.accordion-div{ :id => pair[1].to_s, :class => 'right-panel settings-panel' }
+										= partial pair[1], :layout => false, :locals => { :culture => "Hero" }
+			
+
+
+%script(src="/scripts/helpers.js")
 
 			
 

@@ -196,6 +196,12 @@ class Hero < Opponent
     @@gear
     # return ((filter == nil) ? result : self.filter( result, filter, Weapon ))
   end
+
+  def self.backgrounds
+    Hash.new
+  end
+  
+
   
   def self.rewardGear gearList=nil
     result = {}

@@ -1,0 +1,25 @@
+#column-wrapper {
+	padding-left: 325px;   /* LC width */
+	padding-right: 325px;  /* RC width */
+}
+
+#column-wrapper .column {
+  position: relative;
+  float: left;
+}
+
+#hero-wrapper {
+  width: 325px;          /* LC width */
+  right: 325px;          /* LC width */
+  margin-left: -100%;
+}
+
+#settings-wrapper {
+	width:325px;
+	margin-right:-325px;
+}
+
+
+#reporting {
+	width:100%;
+}

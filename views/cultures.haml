@@ -1,8 +1,9 @@
-%select#culture{ :name =>"culture", :selectedIndex => 0, :onchange => "setCulture( this )" }
-	-if culture == "None"
-		%optgroup{ :style => "font-family:alois" }
-			%option{ :value => "None", :selected => true }
-				Pick a Culture...
-	-Hero.cultures.each do | c |
-		%option{ :value => "#{c.to_s}" , :name => "#{c.cultureName}", :title=> "Testing"}
-			="#{c.cultureName}"
+%div.styled-select
+	%select#culture{ :name =>"culture", :selectedIndex => 0, :onchange => "setCulture( this )" }
+		-if culture == "None"
+			%optgroup{ :style => "font-family:alois" }
+				%option{ :value => "None", :selected => true }
+					Pick a Culture...
+		-Hero.cultures.each do | c |
+			%option{ :value => "#{c.to_s}" , :name => "#{c.cultureName}", :title=> "Testing"}
+				="#{c.cultureName}"

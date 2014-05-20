@@ -1,4 +1,4 @@
-%fieldset
+%fieldset{ :hidden => (culture == "Hero") }
 	%legend
 		Cultural Blessing
 	-blessing=(Object.const_get(culture)).culturalBlessing

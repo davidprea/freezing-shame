@@ -14,7 +14,6 @@
 						%input.fancy{:id => "#{s.downcase}_skill_#{i+1}", :type=>"checkbox", :onchange => 'changeSkill(this)', :value=> i+1, :name=> ("#{s.downcase}_skill")}
 						%label
 				%td
-					%input.fancy{:type=>"checkbox", :disabled => s == "Battle", :name => ("#{s.downcase}_favoured" ), :value=>false}
-					%label
-				%td
-					Favoured
+					%input.underline{:id => "#{s.downcase}_favoured", :type=>"checkbox", :disabled => s == "Battle", :name => ("#{s.downcase}_favoured" ), :value=>false}
+					%label{ :for => "#{s.downcase}_favoured"}
+						Favoured

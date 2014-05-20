@@ -1,7 +1,8 @@
 =type + ": "
 -heroclass=(Object.const_get(culture))
 -gear=heroclass.gear( type, reward.to_sym )
-%select.gear_select{ :id => "#{type.downcase}_selector", :name => type.downcase, :onchange => 'updateGear()' }
-	-gear.keys.each do | key |
-		%option{ :value => key, :name => gear[key].name }
-			= gear[key].name
+%div.styled-select
+	%select.gear_select{ :id => "#{type.downcase}_selector", :name => type.downcase, :onchange => 'updateGear()' }
+		-gear.keys.each do | key |
+			%option{ :value => key, :name => gear[key].name }
+				= gear[key].name

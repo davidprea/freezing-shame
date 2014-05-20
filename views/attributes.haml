@@ -1,4 +1,4 @@
-%fieldset
+%fieldset{ :hidden => (attributes[:body] + attributes[:heart] + attributes[:wits]) == 0 }
 	%table
 		%tr
 			%td.attr
